@@ -22,12 +22,14 @@ function Header() {
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
-            <div>EBC Results Capturing </div>
+            <div>EBC RESULTS CAPTURING</div>
           </Link>
 
-          <div className="nav-item" style={{ marginLeft: "75%" }}>
+          <div className="nav-item" style={{ marginLeft: "70%" }}>
             <Link className="nav-link" to="/" onClick={logout}>
-              <div> Logout</div>
+              <div>
+                <bold>LOGOUT</bold>
+              </div>
             </Link>
           </div>
 

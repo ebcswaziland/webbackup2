@@ -229,7 +229,7 @@ function AdminPage() {
         transaction.update(mpDocRef, { primary_votes: updatedVotes });
       });
 
-      toast.success("MP has successfully voted");
+      toast.success("MP Results captured successfully");
       window.location.reload();
       handleClose();
     } catch (error) {
@@ -257,7 +257,7 @@ function AdminPage() {
         transaction.update(indvunaDocRef, { primary_votes: updatedVotes });
       });
 
-      toast.success("Indvuna has successfully voted");
+      toast.success("Indvuna Results captured successfully");
       window.location.reload();
       handleClose();
     } catch (error) {
@@ -301,6 +301,11 @@ function AdminPage() {
     alignItems: "center",
   };
 
+  const smallfont = {
+    fontSize: "90%",
+    fontWeight: "80%",
+  };
+
   return (
     <Layout loading={loading}>
       <Tabs
@@ -313,14 +318,14 @@ function AdminPage() {
           <table className="table mt-3">
             <thead>
               <tr>
-                <th>Nominee Image</th>
-                <th>Votes</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Chiefdom</th>
-                <th>Inkhundla</th>
-                <th>Region</th>
-                <th>Action</th>
+                <th>NOMINEE IMAGE</th>
+                <th>NAME</th>
+                <th>SURNAME</th>
+                <th>CHIEFDOM</th>
+                <th>INKHUNDLA</th>
+                <th>REGION</th>
+                <th>VOTES</th>
+                <th>ACTION</th>
               </tr>
             </thead>
             <tbody>
@@ -338,7 +343,20 @@ function AdminPage() {
                       />
                     </td>
 
-                    <td>
+                    <td style={{ ...smallfont }}>{item.name.toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>
+                      {item.surname.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.chiefdom.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.inkhundla.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.region.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
                       {item.primary_votes instanceof Map ? (
                         Array.from(item.primary_votes.keys()).map((key) => (
                           <div key={key}>
@@ -347,33 +365,34 @@ function AdminPage() {
                         ))
                       ) : (
                         <div>
-                          {typeof item.primary_votes === "object"
-                            ? // Attempt to get properties of the primary_votes object
-                              Object.keys(item.primary_votes).map((key) => (
-                                <div key={key}>
-                                  {key}: {item.primary_votes[key]}
-                                </div>
-                              ))
-                            : // Handle the case where primary_votes is not defined
-                              "Vote Not Added."}
+                          {typeof item.primary_votes === "object" ? (
+                            // Attempt to get properties of the primary_votes object
+                            Object.keys(item.primary_votes).map((key) => (
+                              <div key={key}>
+                                {key.toUpperCase()}:{" "}
+                                {item.primary_votes[key].toUpperCase()}
+                              </div>
+                            ))
+                          ) : (
+                            // Handle the case where primary_votes is not defined
+                            <span style={{ color: "red", fontSize: "90%" }}>
+                              RESULTS NOT CAPTURED
+                            </span>
+                          )}
                         </div>
                       )}
                     </td>
-
-                    <td>{item.name}</td>
-                    <td>{item.surname}</td>
-                    <td>{item.chiefdom}</td>
-                    <td>{item.inkhundla}</td>
-                    <td>{item.region}</td>
                     <td>
                       {isVoted ? (
-                        "voted" // Display "voted" if the user has voted for this MP
+                        <span style={{ color: "red", fontSize: "90%" }}>
+                          RESULTS CAPTURED
+                        </span>
                       ) : (
                         <div style={actionIconsStyles}>
                           <FaEdit
                             onClick={() => editHandler(item)}
                             color={editedRecord === item ? "gray" : "blue"}
-                            size={20}
+                            size={30}
                             disabled={editedRecord === item}
                           />
                         </div>
@@ -497,14 +516,14 @@ function AdminPage() {
           <table className="table mt-3">
             <thead>
               <tr>
-                <th>Nominee Image</th>
-                <th>Votes</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Chiefdom</th>
-                <th>Inkhundla</th>
-                <th>Region</th>
-                <th>Action</th>
+                <th>NOMINEE IMAGE</th>
+                <th>NAME</th>
+                <th>SURNAME</th>
+                <th>CHIEFDOM</th>
+                <th>INKHUNDLA</th>
+                <th>REGION</th>
+                <th>VOTES</th>
+                <th>ACTION</th>
               </tr>
             </thead>
             <tbody>
@@ -522,7 +541,21 @@ function AdminPage() {
                       />
                     </td>
 
-                    <td>
+                    <td style={{ ...smallfont }}>{item.name.toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>
+                      {item.surname.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.chiefdom.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.inkhundla.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.region.toUpperCase()}
+                    </td>
+
+                    <td style={{ ...smallfont }}>
                       {item.primary_votes instanceof Map ? (
                         Array.from(item.primary_votes.keys()).map((key) => (
                           <div key={key}>
@@ -531,33 +564,35 @@ function AdminPage() {
                         ))
                       ) : (
                         <div>
-                          {typeof item.primary_votes === "object"
-                            ? // Attempt to get properties of the primary_votes object
-                              Object.keys(item.primary_votes).map((key) => (
-                                <div key={key}>
-                                  {key}: {item.primary_votes[key]}
-                                </div>
-                              ))
-                            : // Handle the case where primary_votes is not defined
-                              "Vote Not Added."}
+                          {typeof item.primary_votes === "object" ? (
+                            // Attempt to get properties of the primary_votes object
+                            Object.keys(item.primary_votes).map((key) => (
+                              <div key={key}>
+                                {key.toUpperCase()}:{" "}
+                                {item.primary_votes[key].toUpperCase()}
+                              </div>
+                            ))
+                          ) : (
+                            // Handle the case where primary_votes is not defined
+                            <span style={{ color: "red", fontSize: "90%" }}>
+                              RESULTS NOT CAPTURED
+                            </span>
+                          )}
                         </div>
                       )}
                     </td>
 
-                    <td>{item.name}</td>
-                    <td>{item.surname}</td>
-                    <td>{item.chiefdom}</td>
-                    <td>{item.inkhundla}</td>
-                    <td>{item.region}</td>
                     <td>
                       {isVoted ? (
-                        "voted" // Display "voted" if the user has voted for this MP
+                        <span style={{ color: "red", fontSize: "90%" }}>
+                          RESULTS CAPTURED
+                        </span> // Display "voted" if the user has voted for this MP
                       ) : (
                         <div style={actionIconsStyles}>
                           <FaEdit
                             onClick={() => editHandler2(item)}
                             color={editedRecord === item ? "gray" : "blue"}
-                            size={20}
+                            size={30}
                             disabled={editedRecord === item}
                           />
                         </div>
@@ -658,14 +693,14 @@ function AdminPage() {
           <table className="table mt-3">
             <thead>
               <tr>
-                <th>Nominee Image</th>
-                <th>Votes</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Chiefdom</th>
-                <th>Inkhundla</th>
-                <th>Region</th>
-                <th>Action</th>
+                <th>NOMINEE IMAGE</th>
+                <th>NAME</th>
+                <th>SURNAME</th>
+                <th>CHIEFDOM</th>
+                <th>INKHUNDLA</th>
+                <th>REGION</th>
+                <th>VOTES</th>
+                <th>ACTION</th>
               </tr>
             </thead>
             <tbody>
@@ -683,7 +718,20 @@ function AdminPage() {
                       />
                     </td>
 
-                    <td>
+                    <td style={{ ...smallfont }}>{item.name.toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>
+                      {item.surname.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.chiefdom.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.inkhundla.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.region.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
                       {item.primary_votes instanceof Map ? (
                         Array.from(item.primary_votes.keys()).map((key) => (
                           <div key={key}>
@@ -692,33 +740,34 @@ function AdminPage() {
                         ))
                       ) : (
                         <div>
-                          {typeof item.primary_votes === "object"
-                            ? // Attempt to get properties of the primary_votes object
-                              Object.keys(item.primary_votes).map((key) => (
-                                <div key={key}>
-                                  {key}: {item.primary_votes[key]}
-                                </div>
-                              ))
-                            : // Handle the case where primary_votes is not defined
-                              "Vote Not Added."}
+                          {typeof item.primary_votes === "object" ? (
+                            // Attempt to get properties of the primary_votes object
+                            Object.keys(item.primary_votes).map((key) => (
+                              <div key={key}>
+                                {key.toUpperCase()}:{" "}
+                                {item.primary_votes[key].toUpperCase()}
+                              </div>
+                            ))
+                          ) : (
+                            // Handle the case where primary_votes is not defined
+                            <span style={{ color: "red", fontSize: "90%" }}>
+                              RESULTS NOT CAPTURED
+                            </span>
+                          )}
                         </div>
                       )}
                     </td>
-
-                    <td>{item.name}</td>
-                    <td>{item.surname}</td>
-                    <td>{item.chiefdom}</td>
-                    <td>{item.inkhundla}</td>
-                    <td>{item.region}</td>
                     <td>
                       {isVoted ? (
-                        "voted" // Display "voted" if the user has voted for this BUCOPHO
+                        <span style={{ color: "red", fontSize: "90%" }}>
+                          RESULTS CAPTURED
+                        </span> // Display "voted" if the user has voted for this BUCOPHO
                       ) : (
                         <div style={actionIconsStyles}>
                           <FaEdit
                             onClick={() => editHandler4(item)}
                             color={editedRecord === item ? "gray" : "blue"}
-                            size={20}
+                            size={30}
                             disabled={editedRecord === item}
                           />
                         </div>
@@ -823,13 +872,13 @@ function AdminPage() {
           <table className="table mt-3">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Close Time</th>
-                <th>Open Time</th>
-                <th>Status</th>
-                <th>Total Votes</th>
-                <th>Votes</th>
-                <th>Action</th>
+                <th>NAME</th>
+                <th>CLOSE-TIME</th>
+                <th>OPEN-TIME</th>
+                <th>STATUS</th>
+                <th>TOTAL-REGISTERED</th>
+                <th>TOTAL-VOTES</th>
+                <th>ACTION</th>
               </tr>
             </thead>
             <tbody>
@@ -891,7 +940,7 @@ function AdminPage() {
 
                 return (
                   <tr key={item.id}>
-                    <td>{item.name}</td>
+                    <td style={{ ...smallfont }}>{item.name.toUpperCase()}</td>
                     <td>19:00</td>
                     <td>07:00</td>
 
@@ -916,14 +965,14 @@ function AdminPage() {
                               color: status ? "green" : "red",
                             }}
                           >
-                            {status ? "Open" : "Closed"}
+                            {status ? "OPEN" : "CLOSED"}
                           </span>
                         </div>
                       ) : (
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <FaBan
                             color={editedRecord === item ? "gray" : "red"}
-                            size={20}
+                            size={30}
                             disabled={editedRecord === item}
                           />
                           <span
@@ -932,7 +981,7 @@ function AdminPage() {
                               color: "red",
                             }}
                           >
-                            Non Applicable
+                            NON-APPLICABLE
                           </span>
                         </div>
                       )}
@@ -946,7 +995,7 @@ function AdminPage() {
                           <FaEdit
                             onClick={() => editHandler3(item)}
                             color={editedRecord === item ? "gray" : "blue"}
-                            size={20}
+                            size={30}
                             disabled={editedRecord === item}
                           />
                         </div>
@@ -954,7 +1003,7 @@ function AdminPage() {
                         <div style={actionIconsStyles}>
                           <FaBan
                             color={editedRecord === item ? "gray" : "red"}
-                            size={20}
+                            size={30}
                             disabled={editedRecord === item}
                           />
                         </div>

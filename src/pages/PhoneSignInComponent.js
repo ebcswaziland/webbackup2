@@ -89,6 +89,7 @@ function PhoneSignInComponent({ setShowPhoneSignIn }) {
           });
       } else {
         toast.error("Failed to send OTP !");
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error fetching document:", error);
@@ -115,7 +116,7 @@ function PhoneSignInComponent({ setShowPhoneSignIn }) {
         localStorage.setItem("currentUser", JSON.stringify(userData));
 
         setLoading(false);
-        setShowPhoneSignIn(false); // Hide the phone sign-in component after successful login
+        setShowPhoneSignIn(true); // Hide the phone sign-in component after successful login
 
         // Handle any further actions after phone sign-in here
         // Example: Redirect to a different page
