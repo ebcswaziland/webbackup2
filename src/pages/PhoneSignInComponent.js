@@ -63,8 +63,10 @@ function PhoneSignInComponent({ setShowPhoneSignIn }) {
         const mpData = {
           pollURL: mp.pollURL,
           pollingStation: mp.pollingStation,
+          primaryPollUrl: mp.primaryPollUrl,
         };
         localStorage.setItem("poll", mpData.pollURL);
+        localStorage.setItem("primary_poll", mpData.primaryPollUrl);
         localStorage.setItem("pollstation", mpData.pollingStation);
 
         console.log(mp.pollURL);

@@ -36,6 +36,7 @@ function AdminPage() {
 
   const [add, setAdd] = React.useState(false);
   const [tindvuna, setTindvuna] = React.useState([]);
+  const [bucopho, setBucopho] = React.useState([]);
   const [turnout, setTurnout] = React.useState([]);
   const [MP, setMP] = React.useState([]);
   const [station, setStation] = React.useState("");
@@ -43,6 +44,7 @@ function AdminPage() {
   const phone = localStorage.getItem("phone");
 
   const poll = localStorage.getItem("poll");
+  const primary_poll = localStorage.getItem("primary_poll");
   const pollstation = localStorage.getItem("pollstation");
   const [hasVoted, setHasVoted] = useState(false);
 
@@ -102,6 +104,31 @@ function AdminPage() {
     }
   };
 
+  const handleVoteSubmissionBucopho = async () => {
+    const confirmationMessage = getConfirmationMessage();
+    if (editedRecord) {
+      const updatebucopho = bucopho.filter(
+        (item) => item.id !== editedRecord.id
+      );
+      setBucopho(updatebucopho);
+      setEditedRecord(null); // Reset the edited record
+      setStatus(true);
+    }
+    const isConfirmed = window.confirm(confirmationMessage);
+    if (isConfirmed) {
+      if (confirmationCount < 1) {
+        setConfirmationCount(confirmationCount + 1);
+      } else {
+        // Call the function to submit the vote using a transaction
+        await updateBucopho(product, pollstation);
+
+        setConfirmationCount(0); // Reset the confirmation count after successful submission
+        setVoteSubmitted(true); // Mark the vote as submitted
+        setButtonDisabled(true); // Disable the "SAVE" button
+      }
+    }
+  };
+
   const [product, setProduct] = useState({
     name: "",
     price: 0,
@@ -146,7 +173,7 @@ function AdminPage() {
       console.log("Test2 Poll " + poll);
       console.log("Test3 Poll " + pollstation);
       const product2 = await getDocs(
-        collection(fireDB, `${poll}/Pollings/stations`)
+        collection(fireDB, `${primary_poll}/Pollings/stations`)
       );
 
       const productsArray2 = [];
@@ -189,6 +216,29 @@ function AdminPage() {
     }
   }
 
+  async function getBucophoData() {
+    try {
+      setLoading(true);
+      const productData = await getDocs(
+        collection(fireDB, `${primary_poll}/Indvuna/nominees`)
+      );
+      const productsArray = [];
+      productData.forEach((doc) => {
+        const obj = {
+          id: doc.id,
+          ...doc.data(),
+        };
+        productsArray.push(obj);
+      });
+      setBucopho(productsArray);
+      setLoading(false);
+      console.log(productsArray);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
+
   const editHandler = (item) => {
     setProduct(item);
     setShow(true);
@@ -221,12 +271,12 @@ function AdminPage() {
 
         const mpData = mpDocSnapshot.data();
         const updatedVotes = {
-          ...mpData.primary_votes,
-          [pollstation]: product.primary_votes[pollstation],
+          ...mpData.secondary_votes,
+          [pollstation]: product.secondary_votes[pollstation],
         };
 
         // Update the primary_votes field with the new votes
-        transaction.update(mpDocRef, { primary_votes: updatedVotes });
+        transaction.update(mpDocRef, { secondary_votes: updatedVotes });
       });
 
       toast.success("MP Results captured successfully");
@@ -249,15 +299,47 @@ function AdminPage() {
 
         const indvunaData = indvunaDocSnapshot.data();
         const updatedVotes = {
-          ...indvunaData.primary_votes,
+          ...indvunaData.secondary_votes,
+          [pollstation]: product.secondary_votes[pollstation],
+        };
+
+        // Update the primary_votes field with the new votes
+        transaction.update(indvunaDocRef, { secondary_votes: updatedVotes });
+      });
+
+      toast.success("Indvuna Results captured successfully");
+      window.location.reload();
+      handleClose();
+    } catch (error) {
+      toast.error("Failed to vote: " + error.message);
+    }
+  };
+
+  const updateBucopho = async (product, pollstation) => {
+    const mpDocRef = doc(
+      fireDB,
+      `${primary_poll}/Indvuna/nominees`,
+      product.id
+    );
+    try {
+      await runTransaction(fireDB, async (transaction) => {
+        const mpDocSnapshot = await getDoc(mpDocRef, transaction);
+
+        if (!mpDocSnapshot.exists()) {
+          throw new Error("Bucopho nominee document does not exist.");
+        }
+
+        const mpData = mpDocSnapshot.data();
+        const updatedVotes = {
+          ...mpData.primary_votes,
           [pollstation]: product.primary_votes[pollstation],
         };
 
         // Update the primary_votes field with the new votes
-        transaction.update(indvunaDocRef, { primary_votes: updatedVotes });
+        transaction.update(mpDocRef, { primary_votes: updatedVotes });
       });
 
-      toast.success("Indvuna Results captured successfully");
+      toast.success("Bucopho Results captured successfully");
       window.location.reload();
       handleClose();
     } catch (error) {
@@ -269,7 +351,7 @@ function AdminPage() {
     try {
       setLoading(true);
       await setDoc(
-        doc(fireDB, `${poll}/Pollings/stations`, product.id),
+        doc(fireDB, `${primary_poll}/Pollings/stations`, product.id),
         product
       );
       toast.success("Turnout has successfully added");
@@ -285,6 +367,7 @@ function AdminPage() {
     getOrdersData();
     getTinkhundlaData();
     getPollingsData();
+    getBucophoData();
   }, []);
 
   const tableStyles = {
@@ -318,10 +401,10 @@ function AdminPage() {
           <table className="table mt-3">
             <thead>
               <tr>
-                <th>NOMINEE IMAGE</th>
+                <th>CANDIDATE IMAGE</th>
                 <th>NAME</th>
                 <th>SURNAME</th>
-                <th>CHIEFDOM</th>
+                {/* <th>CHIEFDOM</th> */}
                 <th>INKHUNDLA</th>
                 <th>REGION</th>
                 <th>VOTES</th>
@@ -331,7 +414,7 @@ function AdminPage() {
             <tbody>
               {MP.map((item) => {
                 const isVoted =
-                  item.primary_votes && item.primary_votes[pollstation];
+                  item.secondary_votes && item.secondary_votes[pollstation];
                 return (
                   <tr key={item.id}>
                     <td>
@@ -347,9 +430,9 @@ function AdminPage() {
                     <td style={{ ...smallfont }}>
                       {item.surname.toUpperCase()}
                     </td>
-                    <td style={{ ...smallfont }}>
+                    {/* <td style={{ ...smallfont }}>
                       {item.chiefdom.toUpperCase()}
-                    </td>
+                    </td> */}
                     <td style={{ ...smallfont }}>
                       {item.inkhundla.toUpperCase()}
                     </td>
@@ -357,24 +440,24 @@ function AdminPage() {
                       {item.region.toUpperCase()}
                     </td>
                     <td style={{ ...smallfont }}>
-                      {item.primary_votes instanceof Map ? (
-                        Array.from(item.primary_votes.keys()).map((key) => (
+                      {item.secondary_votes instanceof Map ? (
+                        Array.from(item.secondary_votes.keys()).map((key) => (
                           <div key={key}>
-                            {key}: {item.primary_votes.get(key)}
+                            {key}: {item.secondary_votes.get(key)}
                           </div>
                         ))
                       ) : (
                         <div>
-                          {typeof item.primary_votes === "object" ? (
-                            // Attempt to get properties of the primary_votes object
-                            Object.keys(item.primary_votes).map((key) => (
+                          {Object.keys(item.secondary_votes).length > 0 ? (
+                            // Attempt to get properties of the secondary_votes object
+                            Object.keys(item.secondary_votes).map((key) => (
                               <div key={key}>
                                 {key.toUpperCase()}:{" "}
-                                {item.primary_votes[key].toUpperCase()}
+                                {item.secondary_votes[key].toUpperCase()}
                               </div>
                             ))
                           ) : (
-                            // Handle the case where primary_votes is not defined
+                            // Display "RESULTS NOT CAPTURED" if secondary_votes is not defined or empty
                             <span style={{ color: "red", fontSize: "90%" }}>
                               RESULTS NOT CAPTURED
                             </span>
@@ -382,11 +465,12 @@ function AdminPage() {
                         </div>
                       )}
                     </td>
+
                     <td>
                       {isVoted ? (
                         <span style={{ color: "red", fontSize: "90%" }}>
                           RESULTS CAPTURED
-                        </span>
+                        </span> // Display "voted" if the user has voted for this MP
                       ) : (
                         <div style={actionIconsStyles}>
                           <FaEdit
@@ -493,8 +577,8 @@ function AdminPage() {
                     onChange={(e) =>
                       setProduct({
                         ...product,
-                        primary_votes: {
-                          ...product.primary_votes,
+                        secondary_votes: {
+                          ...product.secondary_votes,
                           [pollstation]: e.target.value,
                         },
                       })
@@ -516,10 +600,10 @@ function AdminPage() {
           <table className="table mt-3">
             <thead>
               <tr>
-                <th>NOMINEE IMAGE</th>
+                <th>CANDIDATE IMAGE</th>
                 <th>NAME</th>
                 <th>SURNAME</th>
-                <th>CHIEFDOM</th>
+                {/* <th>CHIEFDOM</th> */}
                 <th>INKHUNDLA</th>
                 <th>REGION</th>
                 <th>VOTES</th>
@@ -529,7 +613,7 @@ function AdminPage() {
             <tbody>
               {tindvuna.map((item) => {
                 const isVoted =
-                  item.primary_votes && item.primary_votes[pollstation];
+                  item.secondary_votes && item.secondary_votes[pollstation];
                 return (
                   <tr key={item.id}>
                     <td>
@@ -545,9 +629,9 @@ function AdminPage() {
                     <td style={{ ...smallfont }}>
                       {item.surname.toUpperCase()}
                     </td>
-                    <td style={{ ...smallfont }}>
+                    {/* <td style={{ ...smallfont }}>
                       {item.chiefdom.toUpperCase()}
-                    </td>
+                    </td> */}
                     <td style={{ ...smallfont }}>
                       {item.inkhundla.toUpperCase()}
                     </td>
@@ -556,20 +640,20 @@ function AdminPage() {
                     </td>
 
                     <td style={{ ...smallfont }}>
-                      {item.primary_votes instanceof Map ? (
-                        Array.from(item.primary_votes.keys()).map((key) => (
+                      {item.secondary_votes instanceof Map ? (
+                        Array.from(item.secondary_votes.keys()).map((key) => (
                           <div key={key}>
-                            {key}: {item.primary_votes.get(key)}
+                            {key}: {item.secondary_votes.get(key)}
                           </div>
                         ))
                       ) : (
                         <div>
-                          {typeof item.primary_votes === "object" ? (
+                          {Object.keys(item.secondary_votes).length > 0 ? (
                             // Attempt to get properties of the primary_votes object
-                            Object.keys(item.primary_votes).map((key) => (
+                            Object.keys(item.secondary_votes).map((key) => (
                               <div key={key}>
                                 {key.toUpperCase()}:{" "}
-                                {item.primary_votes[key].toUpperCase()}
+                                {item.secondary_votes[key].toUpperCase()}
                               </div>
                             ))
                           ) : (
@@ -670,8 +754,8 @@ function AdminPage() {
                   onChange={(e) => {
                     setProduct({
                       ...product,
-                      primary_votes: {
-                        ...product.primary_votes,
+                      secondary_votes: {
+                        ...product.secondary_votes,
                         [pollstation]: e.target.value,
                       },
                     });
@@ -688,7 +772,7 @@ function AdminPage() {
           </Modal>
         </Tab>
 
-        <Tab eventKey="users" title="BUCOPHO">
+        <Tab eventKey="bucopho" title="BUCOPHO">
           <div className="d-flex justify-content-between"></div>
           <table className="table mt-3">
             <thead>
@@ -704,7 +788,7 @@ function AdminPage() {
               </tr>
             </thead>
             <tbody>
-              {tindvuna.map((item) => {
+              {bucopho.map((item) => {
                 const isVoted =
                   item.primary_votes && item.primary_votes[pollstation];
                 return (
@@ -858,11 +942,7 @@ function AdminPage() {
             <Modal.Footer>
               {/* <button>Close</button> */}
 
-              <button
-              //  onClick={updatetindvuna}
-              >
-                SAVE
-              </button>
+              <button onClick={handleVoteSubmissionBucopho}>SAVE</button>
             </Modal.Footer>
           </Modal>
         </Tab>
@@ -895,7 +975,10 @@ function AdminPage() {
                     // Update the status in the Firestore database
                     // Replace 'updateDoc' with your actual update method
                     await updateDoc(
-                      doc(fireDB, `${poll}/Pollings/stations/${item.id}`),
+                      doc(
+                        fireDB,
+                        `${primary_poll}/Pollings/stations/${item.id}`
+                      ),
                       {
                         status: updatedStatus,
                       }
