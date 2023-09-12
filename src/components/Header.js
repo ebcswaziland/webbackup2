@@ -1,11 +1,11 @@
 import React from "react";
 //import "../stylesheets/layout.css";
 import { Link } from "react-router-dom";
-import { FaBars, FaCartPlus, FaUser } from "react-icons/fa";
+import { FaBars,  FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
 function Header() {
-  const { cartItems } = useSelector((state) => state.cartReducer);
+  // const { cartItems } = useSelector((state) => state.cartReducer);
   const { user } = JSON.parse(localStorage.getItem("currentUser"));
   // console.log("userqqqqqqqqqqqqqqqq " + user);
 

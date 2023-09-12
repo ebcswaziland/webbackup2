@@ -6,15 +6,13 @@ import {
   getDocs,
   getDoc,
   setDoc,
-  getFirestore,
-  onSnapshot,
   runTransaction,
   updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Modal, Tab, Tabs } from "react-bootstrap";
 import { FaBan, FaEdit } from "react-icons/fa";
-import { useParams } from "react-router";
+// import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import Layout from "../components/Layout";
 import fireDB from "../fireConfig";
@@ -22,31 +20,31 @@ import fireDB from "../fireConfig";
 function AdminPage() {
   const [confirmationCount, setConfirmationCount] = useState(0);
   const [voteSubmitted, setVoteSubmitted] = useState(false);
-  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [, setButtonDisabled] = useState(false);
   const [editedRecord, setEditedRecord] = useState(null);
   const [status, setStatus] = useState(false);
 
-  const [products, setProducts] = React.useState([]);
+  // const [products, setProducts] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  const [orders, setOrders] = React.useState([]);
+  // const [orders, setOrders] = React.useState([]);
   const [show, setShow] = React.useState(false);
   const [show2, setShow2] = React.useState(false);
   const [show3, setShow3] = React.useState(false);
   const [show4, setShow4] = React.useState(false);
 
-  const [add, setAdd] = React.useState(false);
+  const [add, ] = React.useState(false);
   const [tindvuna, setTindvuna] = React.useState([]);
   const [bucopho, setBucopho] = React.useState([]);
   const [turnout, setTurnout] = React.useState([]);
   const [MP, setMP] = React.useState([]);
-  const [station, setStation] = React.useState("");
+  const [station, ] = React.useState("");
   // const [poll, setPoll] = React.useState("");
-  const phone = localStorage.getItem("phone");
+  // const phone = localStorage.getItem("phone");
 
   const poll = localStorage.getItem("poll");
   const primary_poll = localStorage.getItem("primary_poll");
   const pollstation = localStorage.getItem("pollstation");
-  const [hasVoted, setHasVoted] = useState(false);
+  // const [hasVoted, setHasVoted] = useState(false);
 
   const getConfirmationMessage = () => {
     if (confirmationCount === 0) {
@@ -137,11 +135,11 @@ function AdminPage() {
   });
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const handleShow = () => setShow(true);
   const handleClose2 = () => setShow2(false);
   const handleClose3 = () => setShow3(false);
   const handleClose4 = () => setShow4(false);
-  const handleShow2 = () => setShow2(true);
+  // const handleShow2 = () => setShow2(true);
   console.log("Test Poll " + poll);
 
   async function getOrdersData() {
