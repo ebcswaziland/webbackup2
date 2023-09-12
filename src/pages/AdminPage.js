@@ -1,13 +1,20 @@
 import {
+  addDoc,
   collection,
+  deleteDoc,
   doc,
-  getDoc,
   getDocs,
+  getDoc,
+  setDoc,
+  getFirestore,
+  onSnapshot,
   runTransaction,
-  setDoc
+  updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Modal, Tab, Tabs } from "react-bootstrap";
+import { FaBan, FaEdit } from "react-icons/fa";
+import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import Layout from "../components/Layout";
 import fireDB from "../fireConfig";
@@ -26,8 +33,6 @@ function AdminPage() {
   const [show2, setShow2] = React.useState(false);
   const [show3, setShow3] = React.useState(false);
   const [show4, setShow4] = React.useState(false);
-  const [show5, setShow5] = React.useState(false);
-  const [show6, setShow6] = React.useState(false);
 
   const [add, setAdd] = React.useState(false);
   const [tindvuna, setTindvuna] = React.useState([]);
@@ -40,9 +45,7 @@ function AdminPage() {
 
   const poll = localStorage.getItem("poll");
   const primary_poll = localStorage.getItem("primary_poll");
-  // const pollstation = localStorage.getItem("pollstation");
-  const [pollstation, setPollstation] = React.useState("");
-
+  const pollstation = localStorage.getItem("pollstation");
   const [hasVoted, setHasVoted] = useState(false);
 
   const getConfirmationMessage = () => {
@@ -82,7 +85,6 @@ function AdminPage() {
       const updatetindvuna = tindvuna.filter(
         (item) => item.id !== editedRecord.id
       );
-
       setTindvuna(updatetindvuna);
       setEditedRecord(null); // Reset the edited record
       setStatus(true);
@@ -139,9 +141,6 @@ function AdminPage() {
   const handleClose2 = () => setShow2(false);
   const handleClose3 = () => setShow3(false);
   const handleClose4 = () => setShow4(false);
-  const handleClose5 = () => setShow5(false);
-  const handleClose6 = () => setShow6(false);
-
   const handleShow2 = () => setShow2(true);
   console.log("Test Poll " + poll);
 
@@ -149,7 +148,7 @@ function AdminPage() {
     try {
       setLoading(true);
       console.log("Test2 Poll " + poll);
-      const product = await getDocs(collection(fireDB, `${primary_poll}/Bucopho/nominees`));
+      const product = await getDocs(collection(fireDB, `${poll}/MP/nominees`));
 
       const productsArray = [];
       product.forEach((doc) => {
@@ -245,17 +244,7 @@ function AdminPage() {
     setShow(true);
   };
 
-  const editHandler5 = (item) => {
-    setProduct(item);
-    setShow5(true);
-
-  }; const editHandler6 = (item) => {
-    setProduct(item);
-    setShow6(true);
-  };
-
   const editHandler2 = (item) => {
-
     setProduct(item);
     setShow2(true);
   };
@@ -271,7 +260,7 @@ function AdminPage() {
   };
 
   const updateMP = async (product, pollstation) => {
-    const mpDocRef = doc(fireDB, `${primary_poll}/Bucopho/nominees`, product.id);
+    const mpDocRef = doc(fireDB, `${poll}/MP/nominees`, product.id);
     try {
       await runTransaction(fireDB, async (transaction) => {
         const mpDocSnapshot = await getDoc(mpDocRef, transaction);
@@ -290,7 +279,7 @@ function AdminPage() {
         transaction.update(mpDocRef, { secondary_votes: updatedVotes });
       });
 
-      toast.success("Bucopho Results captured successfully");
+      toast.success("MP Results captured successfully");
       window.location.reload();
       handleClose();
     } catch (error) {
@@ -377,7 +366,7 @@ function AdminPage() {
   useEffect(() => {
     getOrdersData();
     getTinkhundlaData();
-    // getPollingsData();
+    getPollingsData();
     getBucophoData();
   }, []);
 
@@ -407,7 +396,7 @@ function AdminPage() {
         id="uncontrolled-tab-example"
         className="mb-3"
       >
-        <Tab eventKey="products" title="BUCOPHO">
+        <Tab eventKey="products" title="MEMBERS OF PARLIAMENTS">
           <div className="d-flex justify-content-between"></div>
           <table className="table mt-3">
             <thead>
@@ -415,23 +404,216 @@ function AdminPage() {
                 <th>CANDIDATE IMAGE</th>
                 <th>NAME</th>
                 <th>SURNAME</th>
-                <th>CHIEFDOM</th>
+                {/* <th>CHIEFDOM</th> */}
                 <th>INKHUNDLA</th>
                 <th>REGION</th>
                 <th>VOTES</th>
-                <th>SPECIAL</th>
-                <th>DIASPORA</th>
-                <th>INMATE</th>
+                <th>ACTION</th>
               </tr>
             </thead>
             <tbody>
               {MP.map((item) => {
                 const isVoted =
-                  item.secondary_votes && item.secondary_votes["SPECIAL"];
-                const isVoted2 =
-                  item.secondary_votes && item.secondary_votes["DIASPORA"];
-                const isVoted3 =
-                  item.secondary_votes && item.secondary_votes["INMATE"];
+                  item.secondary_votes && item.secondary_votes[pollstation];
+                return (
+                  <tr key={item.id}>
+                    <td>
+                      <img
+                        src={item.img}
+                        height="80"
+                        width="80"
+                        alt={item.name}
+                      />
+                    </td>
+
+                    <td style={{ ...smallfont }}>{item.name.toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>
+                      {item.surname.toUpperCase()}
+                    </td>
+                    {/* <td style={{ ...smallfont }}>
+                      {item.chiefdom.toUpperCase()}
+                    </td> */}
+                    <td style={{ ...smallfont }}>
+                      {item.inkhundla.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.region.toUpperCase()}
+                    </td>
+                    <td style={{ ...smallfont }}>
+                      {item.secondary_votes instanceof Map ? (
+                        Array.from(item.secondary_votes.keys()).map((key) => (
+                          <div key={key}>
+                            {key}: {item.secondary_votes.get(key)}
+                          </div>
+                        ))
+                      ) : (
+                        <div>
+                          {Object.keys(item.secondary_votes).length > 0 ? (
+                            // Attempt to get properties of the secondary_votes object
+                            Object.keys(item.secondary_votes).map((key) => (
+                              <div key={key}>
+                                {key.toUpperCase()}:{" "}
+                                {item.secondary_votes[key].toUpperCase()}
+                              </div>
+                            ))
+                          ) : (
+                            // Display "RESULTS NOT CAPTURED" if secondary_votes is not defined or empty
+                            <span style={{ color: "red", fontSize: "90%" }}>
+                              RESULTS NOT CAPTURED
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </td>
+
+                    <td>
+                      {isVoted ? (
+                        <span style={{ color: "red", fontSize: "90%" }}>
+                          RESULTS CAPTURED
+                        </span> // Display "voted" if the user has voted for this MP
+                      ) : (
+                        <div style={actionIconsStyles}>
+                          <FaEdit
+                            onClick={() => editHandler(item)}
+                            color={editedRecord === item ? "gray" : "blue"}
+                            size={30}
+                            disabled={editedRecord === item}
+                          />
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                {add ? "Add a product" : "ADD VOTE TO MP"}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {" "}
+              <div className="register-form">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <img
+                    src={product.img}
+                    alt="Product Image"
+                    className="img-fluid"
+                    style={{ borderRadius: "50%" }}
+                    width="35%"
+                    height="auto"
+                  />
+                </div>
+
+                <input
+                  type="text"
+                  value={product.name}
+                  className="form-control"
+                  placeholder="name"
+                  onChange={(e) =>
+                    setProduct({ ...product, name: e.target.value })
+                  }
+                  readOnly={true}
+                />
+
+                <input
+                  type="text"
+                  value={product.surname}
+                  className="form-control"
+                  placeholder="surname"
+                  onChange={(e) =>
+                    setProduct({ ...product, surname: e.target.value })
+                  }
+                  readOnly={true}
+                />
+
+                <input
+                  type="text"
+                  value={product.inkhundla}
+                  className="form-control"
+                  placeholder="price"
+                  onChange={(e) =>
+                    setProduct({ ...product, inkhundla: e.target.value })
+                  }
+                  readOnly={true}
+                />
+
+                <input
+                  type="text"
+                  value={product.region}
+                  className="form-control"
+                  placeholder="category"
+                  onChange={(e) =>
+                    setProduct({ ...product, region: e.target.value })
+                  }
+                  readOnly={true}
+                  style={{ display: "none" }}
+                />
+
+                {voteSubmitted ? (
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="enter vote"
+                    value={product.primary_votes[station] || ""}
+                    readOnly
+                    disabled={status} // Set disabled based on status
+                  />
+                ) : (
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="enter vote"
+                    min={1}
+                    onChange={(e) =>
+                      setProduct({
+                        ...product,
+                        secondary_votes: {
+                          ...product.secondary_votes,
+                          [pollstation]: e.target.value,
+                        },
+                      })
+                    }
+                    disabled={status} // Disable the input field if status is true
+                  />
+                )}
+                <hr />
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <button onClick={handleVoteSubmission}>SAVE</button>
+            </Modal.Footer>
+          </Modal>
+        </Tab>
+
+        <Tab eventKey="orders" title="INDVUNA YENKHUNDLA">
+          <div className="d-flex justify-content-between"></div>
+          <table className="table mt-3">
+            <thead>
+              <tr>
+                <th>CANDIDATE IMAGE</th>
+                <th>NAME</th>
+                <th>SURNAME</th>
+                {/* <th>CHIEFDOM</th> */}
+                <th>INKHUNDLA</th>
+                <th>REGION</th>
+                <th>VOTES</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tindvuna.map((item) => {
+                const isVoted =
+                  item.secondary_votes && item.secondary_votes[pollstation];
                 return (
                   <tr key={item.id}>
                     <td>
@@ -491,92 +673,13 @@ function AdminPage() {
                         </span> // Display "voted" if the user has voted for this MP
                       ) : (
                         <div style={actionIconsStyles}>
-                          <button
-                            onClick={() => editHandler(item)}
-                            style={{
-                              backgroundColor: editedRecord === item ? "gray" : "#34aadc",
-                              fontSize: "15px",
-                              margin: "5px", // Use double quotes for property values
-                              height: "35px", // Use double quotes for property values
-                              width: "100px", // Use double quotes for property values
-                              borderRadius: "10px", // Use double quotes for property values
-                              border: "none",
-                              boxShadow: "1px 1px 0px 2px rgba(0, 0, 0, 0.3)", // Remove spaces in rgba()
-                              // background: "rgb(141, 217, 252)", // Fix the background property value
-                              cursor: "pointer",
-                              color: "white", // Add text color
-                            }}
+                          <FaEdit
+                            onClick={() => editHandler2(item)}
+                            color={editedRecord === item ? "gray" : "blue"}
+                            size={30}
                             disabled={editedRecord === item}
-                          >
-                            SPECIAL
-                          </button>
-
+                          />
                         </div>
-
-                      )}
-                    </td>
-
-                    {/* //second button */}
-                    <td>
-                      {isVoted2 ? (
-                        <span style={{ color: "red", fontSize: "90%" }}>
-                          RESULTS CAPTURED
-                        </span> // Display "voted" if the user has voted for this MP
-                      ) : (
-                        <div style={actionIconsStyles}>
-                          <button
-                            onClick={() => editHandler5(item)}
-                            style={{
-                              backgroundColor: editedRecord === item ? "gray" : "#000000",
-                              fontSize: "15px",
-                              margin: "5px", // Use double quotes for property values
-                              height: "35px", // Use double quotes for property values
-                              width: "100px", // Use double quotes for property values
-                              borderRadius: "10px", // Use double quotes for property values
-                              border: "none",
-                              boxShadow: "1px 1px 0px 2px rgba(0, 0, 0, 0.3)", // Remove spaces in rgba()
-                              // background: "rgb(141, 217, 252)", // Fix the background property value
-                              cursor: "pointer",
-                              color: "white", // Add text color
-                            }}
-                            disabled={editedRecord === item}
-                          >
-                            DIASPORA
-                          </button>
-                        </div>
-                      )}
-                    </td>
-
-                    {/* Third button */}
-                    <td>
-                      {isVoted3 ? (
-                        <span style={{ color: "red", fontSize: "90%" }}>
-                          RESULTS CAPTURED
-                        </span> // Display "voted" if the user has voted for this MP
-                      ) : (
-                        <div style={actionIconsStyles}>
-                          <button
-                            onClick={() => editHandler6(item)}
-                            style={{
-                              backgroundColor: editedRecord === item ? "gray" : "#34aadc",
-                              fontSize: "15px",
-                              margin: "5px", // Use double quotes for property values
-                              height: "35px", // Use double quotes for property values
-                              width: "100px", // Use double quotes for property values
-                              borderRadius: "10px", // Use double quotes for property values
-                              border: "none",
-                              boxShadow: "1px 1px 0px 2px rgba(0, 0, 0, 0.3)", // Remove spaces in rgba()
-                              // background: "rgb(141, 217, 252)", // Fix the background property value
-                              cursor: "pointer",
-                              color: "white", // Add text color
-                            }}
-                            disabled={editedRecord === item}
-                          >
-                            INMATE
-                          </button>
-
-                        </div>
-
                       )}
                     </td>
                   </tr>
@@ -585,11 +688,10 @@ function AdminPage() {
             </tbody>
           </table>
 
-
-          <Modal show={show} onHide={handleClose}>
+          <Modal show={show2} onHide={handleClose2}>
             <Modal.Header closeButton>
               <Modal.Title>
-                {add ? "Add a product" : "ADD SPECIAL VOTE"}
+                {add ? "Add a product" : "ADD VOTE TO INDVUNA"}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -650,7 +752,6 @@ function AdminPage() {
                   className="form-control"
                   placeholder="enter vote"
                   onChange={(e) => {
-                    setPollstation("SPECIAL")
                     setProduct({
                       ...product,
                       secondary_votes: {
@@ -666,194 +767,12 @@ function AdminPage() {
             <Modal.Footer>
               {/* <button>Close</button> */}
 
-              <button onClick={handleVoteSubmission}>SAVE</button>
+              <button onClick={handleVoteSubmissionIndvuna}>SAVE</button>
             </Modal.Footer>
           </Modal>
-
-
-
-
-
-
-
-
-
-
-
-          <Modal show={show5} onHide={handleClose5}>
-            <Modal.Header closeButton>
-              <Modal.Title>
-                {add ? "Add a product" : "ADD DIASPORA VOTE"}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {" "}
-              <div className="register-form">
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <img
-                    src={product.img}
-                    alt="Product Image"
-                    className="img-fluid"
-                    style={{ borderRadius: "50%" }}
-                    width="35%"
-                    height="auto"
-                  />
-                </div>
-
-                <input
-                  type="text"
-                  value={product.name}
-                  className="form-control"
-                  placeholder="name"
-                  readOnly={true}
-                />
-
-                <input
-                  type="text"
-                  value={product.surname}
-                  className="form-control"
-                  placeholder="surname"
-                  readOnly={true}
-                />
-
-                <input
-                  type="text"
-                  value={product.inkhundla}
-                  className="form-control"
-                  placeholder="price"
-                  readOnly={true}
-                />
-
-                <input
-                  type="text"
-                  value={product.region}
-                  className="form-control"
-                  placeholder="category"
-                  readOnly={true}
-                  style={{ display: "none" }}
-                />
-
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="enter vote"
-                  onChange={(e) => {
-                    setPollstation("DIASPORA")
-                    setProduct({
-                      ...product,
-                      secondary_votes: {
-                        ...product.secondary_votes,
-                        [pollstation]: e.target.value,
-                      },
-                    });
-                  }}
-                />
-                <hr />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              {/* <button>Close</button> */}
-
-              <button onClick={handleVoteSubmission}>SAVE</button>
-            </Modal.Footer>
-          </Modal>
-          {/* 
-          DIASPORA */}
-
-          <Modal show={show6} onHide={handleClose6}>
-            <Modal.Header closeButton>
-              <Modal.Title>
-                {add ? "Add a product" : "ADD INMATE VOTE"}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {" "}
-              <div className="register-form">
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <img
-                    src={product.img}
-                    alt="Product Image"
-                    className="img-fluid"
-                    style={{ borderRadius: "50%" }}
-                    width="35%"
-                    height="auto"
-                  />
-                </div>
-
-                <input
-                  type="text"
-                  value={product.name}
-                  className="form-control"
-                  placeholder="name"
-                  readOnly={true}
-                />
-
-                <input
-                  type="text"
-                  value={product.surname}
-                  className="form-control"
-                  placeholder="surname"
-                  readOnly={true}
-                />
-
-                <input
-                  type="text"
-                  value={product.inkhundla}
-                  className="form-control"
-                  placeholder="price"
-                  readOnly={true}
-                />
-
-                <input
-                  type="text"
-                  value={product.region}
-                  className="form-control"
-                  placeholder="category"
-                  readOnly={true}
-                  style={{ display: "none" }}
-                />
-
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="enter vote"
-                  onChange={(e) => {
-                    setPollstation("INMATE")
-                    setProduct({
-                      ...product,
-                      secondary_votes: {
-                        ...product.secondary_votes,
-                        [pollstation]: e.target.value,
-                      },
-                    });
-                  }}
-                />
-                <hr />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              {/* <button>Close</button> */}
-
-              <button onClick={handleVoteSubmission}>SAVE</button>
-            </Modal.Footer>
-          </Modal>
-
         </Tab>
 
-
-        {/* <Tab eventKey="bucopho" title="BUCOPHO">
+        <Tab eventKey="bucopho" title="BUCOPHO">
           <div className="d-flex justify-content-between"></div>
           <table className="table mt-3">
             <thead>
@@ -1021,13 +940,12 @@ function AdminPage() {
               </div>
             </Modal.Body>
             <Modal.Footer>
-              
+              {/* <button>Close</button> */}
 
               <button onClick={handleVoteSubmissionBucopho}>SAVE</button>
             </Modal.Footer>
           </Modal>
-        </Tab> }
-       
+        </Tab>
 
         <Tab eventKey="v_turnout" title="VOTER TURNOUT">
           <div className="d-flex justify-content-between"></div>
@@ -1205,7 +1123,29 @@ function AdminPage() {
                   readOnly={true}
                 />
 
-       
+                {/* <input
+                  type="text"
+                  value={product.open_time}
+                  className="form-control"
+                  placeholder="surname"
+                  readOnly={true}
+                /> */}
+
+                {/* <input
+                  type="text"
+                  value={product.close_time}
+                  className="form-control"
+                  placeholder="surname"
+                  readOnly={true}
+                /> */}
+
+                {/* <input
+                  type="text"
+                  value={product.status}
+                  className="form-control"
+                  placeholder="price"
+                  readOnly={true}
+                /> */}
 
                 <input
                   type="text"
@@ -1231,15 +1171,12 @@ function AdminPage() {
               </div>
             </Modal.Body>
             <Modal.Footer>
-      
+              {/* <button>Close</button> */}
 
               <button onClick={updateturnout}>SAVE</button>
             </Modal.Footer>
           </Modal>
         </Tab>
-
-      */}
-
       </Tabs>
     </Layout>
   );
