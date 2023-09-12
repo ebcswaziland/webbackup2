@@ -220,7 +220,7 @@ function AdminPage() {
     try {
       setLoading(true);
       const productData = await getDocs(
-        collection(fireDB, `${primary_poll}/Indvuna/nominees`)
+        collection(fireDB, `${primary_poll}/Bucopho/nominees`)
       );
       const productsArray = [];
       productData.forEach((doc) => {
@@ -318,7 +318,7 @@ function AdminPage() {
   const updateBucopho = async (product, pollstation) => {
     const mpDocRef = doc(
       fireDB,
-      `${primary_poll}/Indvuna/nominees`,
+      `${primary_poll}/Bucopho/nominees`,
       product.id
     );
     try {
