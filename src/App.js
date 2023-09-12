@@ -1,5 +1,5 @@
 import "./App.css";
-// import Homepage from "./pages/Homepage";
+import Homepage from "./pages/Homepage";
 import { Route, BrowserRouter, Routes, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ProductInfo from "./pages/ProductInfo";
@@ -13,7 +13,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import OrdersPage from "./pages/OrdersPage";
 import AdminPage from "./pages/AdminPage";
-// import registerApp from "./pages/register";
+import registerApp from "./pages/register";
 
 function App() {
   return (
