@@ -149,7 +149,7 @@ function AdminPage() {
     try {
       setLoading(true);
       console.log("Test2 Poll " + poll);
-      const product = await getDocs(collection(fireDB, `${poll}/MP/nominees`));
+      const product = await getDocs(collection(fireDB, `${primary_poll}/Bucopho/nominees`));
 
       const productsArray = [];
       product.forEach((doc) => {
@@ -271,7 +271,7 @@ function AdminPage() {
   };
 
   const updateMP = async (product, pollstation) => {
-    const mpDocRef = doc(fireDB, `${poll}/MP/nominees`, product.id);
+    const mpDocRef = doc(fireDB, `${primary_poll}/Bucopho/nominees`, product.id);
     try {
       await runTransaction(fireDB, async (transaction) => {
         const mpDocSnapshot = await getDoc(mpDocRef, transaction);
@@ -290,7 +290,7 @@ function AdminPage() {
         transaction.update(mpDocRef, { secondary_votes: updatedVotes });
       });
 
-      toast.success("MP Results captured successfully");
+      toast.success("Bucopho Results captured successfully");
       window.location.reload();
       handleClose();
     } catch (error) {
@@ -407,7 +407,7 @@ function AdminPage() {
         id="uncontrolled-tab-example"
         className="mb-3"
       >
-        <Tab eventKey="products" title="MEMBERS OF PARLIAMENTS">
+        <Tab eventKey="products" title="BUCOPHO">
           <div className="d-flex justify-content-between"></div>
           <table className="table mt-3">
             <thead>
@@ -415,7 +415,7 @@ function AdminPage() {
                 <th>CANDIDATE IMAGE</th>
                 <th>NAME</th>
                 <th>SURNAME</th>
-                {/* <th>CHIEFDOM</th> */}
+                <th>CHIEFDOM</th>
                 <th>INKHUNDLA</th>
                 <th>REGION</th>
                 <th>VOTES</th>
