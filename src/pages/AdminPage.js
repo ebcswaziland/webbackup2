@@ -662,18 +662,31 @@ function AdminPage() {
                       ) : (
                         <div>
                           {Object.keys(item.secondary_votes).length > 0 ? (
-                            // Attempt to get properties of the primary_votes object
+                            // Attempt to get properties of the secondary_votes object
                             Object.keys(item.secondary_votes).map((key) => (
                               <div key={key}>
-                                {key.toUpperCase()}:{" "}
-                                {item.secondary_votes[key].toUpperCase()}
+                                {key.toUpperCase()}: {item.secondary_votes[key].toUpperCase()}
                               </div>
                             ))
                           ) : (
-                            // Handle the case where primary_votes is not defined
+                            // Handle the case where secondary_votes is not defined
                             <span style={{ color: "red", fontSize: "90%" }}>
                               RESULTS NOT CAPTURED
                             </span>
+                          )}
+
+                          {/* Conditionally render the "Total Captured" value */}
+                          {Object.keys(item.secondary_votes).length > 0 && (
+                            <div>
+                              <span>
+                                <br></br>
+                                TOTAL CAPTURED: {" "}
+                                {Object.values(item.secondary_votes).reduce(
+                                  (acc, value) => acc + parseInt(value, 10),
+                                  0
+                                )}
+                              </span>
+                            </div>
                           )}
                         </div>
                       )}
@@ -829,27 +842,40 @@ function AdminPage() {
                       {item.region.toUpperCase()}
                     </td>
                     <td style={{ ...smallfont }}>
-                      {item.primary_votes instanceof Map ? (
-                        Array.from(item.primary_votes.keys()).map((key) => (
+                      {item.secondary_votes instanceof Map ? (
+                        Array.from(item.secondary_votes.keys()).map((key) => (
                           <div key={key}>
-                            {key}: {item.primary_votes.get(key)}
+                            {key}: {item.secondary_votes.get(key)}
                           </div>
                         ))
                       ) : (
                         <div>
-                          {typeof item.primary_votes === "object" ? (
-                            // Attempt to get properties of the primary_votes object
-                            Object.keys(item.primary_votes).map((key) => (
+                          {Object.keys(item.secondary_votes).length > 0 ? (
+                            // Attempt to get properties of the secondary_votes object
+                            Object.keys(item.secondary_votes).map((key) => (
                               <div key={key}>
-                                {key.toUpperCase()}:{" "}
-                                {item.primary_votes[key].toUpperCase()}
+                                {key.toUpperCase()}: {item.secondary_votes[key].toUpperCase()}
                               </div>
                             ))
                           ) : (
-                            // Handle the case where primary_votes is not defined
+                            // Handle the case where secondary_votes is not defined
                             <span style={{ color: "red", fontSize: "90%" }}>
                               RESULTS NOT CAPTURED
                             </span>
+                          )}
+
+                          {/* Conditionally render the "Total Captured" value */}
+                          {Object.keys(item.secondary_votes).length > 0 && (
+                            <div>
+                              <span>
+                                <br></br>
+                                TOTAL CAPTURED: {" "}
+                                {Object.values(item.secondary_votes).reduce(
+                                  (acc, value) => acc + parseInt(value, 10),
+                                  0
+                                )}
+                              </span>
+                            </div>
                           )}
                         </div>
                       )}
