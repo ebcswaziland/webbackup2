@@ -452,15 +452,28 @@ function AdminPage() {
                             // Attempt to get properties of the secondary_votes object
                             Object.keys(item.secondary_votes).map((key) => (
                               <div key={key}>
-                                {key.toUpperCase()}:{" "}
-                                {item.secondary_votes[key].toUpperCase()}
+                                {key.toUpperCase()}: {item.secondary_votes[key].toUpperCase()}
                               </div>
                             ))
                           ) : (
-                            // Display "RESULTS NOT CAPTURED" if secondary_votes is not defined or empty
+                            // Handle the case where secondary_votes is not defined
                             <span style={{ color: "red", fontSize: "90%" }}>
                               RESULTS NOT CAPTURED
                             </span>
+                          )}
+
+                          {/* Conditionally render the "Total Captured" value */}
+                          {Object.keys(item.secondary_votes).length > 0 && (
+                            <div>
+                              <span>
+                                <br></br>
+                                TOTAL CAPTURED: {" "}
+                                {Object.values(item.secondary_votes).reduce(
+                                  (acc, value) => acc + parseInt(value, 10),
+                                  0
+                                )}
+                              </span>
+                            </div>
                           )}
                         </div>
                       )}
