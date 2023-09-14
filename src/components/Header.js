@@ -29,7 +29,7 @@ function Header() {
             </div>
           </Link>
 
-          <div className="nav-item" style={{ marginLeft: "75%", fontSizeAdjust: '90px' }}>
+          <div className="nav-item" style={{ marginLeft: "50%", fontSizeAdjust: '90px' }}>
             <Link className="nav-link" to="/" onClick={logout}>
               <div>
                 {logouttext.toUpperCase()}
