@@ -81,7 +81,7 @@ function LoginPage() {
 
         <div className="col-md-5 z1">
           <lottie-player
-            src="https://assets9.lottiefiles.com/packages/lf20_yr6zz3wv.json"
+            src="https://lottie.host/3d52034f-3d78-4398-a7da-8a41acf2cf6e/16qRvh7DGF.json"
             background="transparent"
             speed="1"
             loop
