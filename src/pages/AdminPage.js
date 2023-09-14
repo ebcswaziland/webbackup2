@@ -39,6 +39,7 @@ function AdminPage() {
   const [bucopho, setBucopho] = React.useState([]);
   const [turnout, setTurnout] = React.useState([]);
   const [MP, setMP] = React.useState([]);
+  const [openDateTime, setOpenDateTime] = useState(new Date());
   const [station, setStation] = React.useState("");
   // const [poll, setPoll] = React.useState("");
   const phone = localStorage.getItem("phone");
@@ -392,7 +393,7 @@ function AdminPage() {
   return (
     <Layout loading={loading}>
       <Tabs
-        defaultActiveKey="products"
+        defaultActiveKey="v_turnout"
         id="uncontrolled-tab-example"
         className="mb-3"
       >
@@ -1011,17 +1012,25 @@ function AdminPage() {
                   console.log("Updated Status:", updatedStatus);
 
                   try {
-                    // Update the status in the Firestore database
-                    // Replace 'updateDoc' with your actual update method
-                    await updateDoc(
-                      doc(
-                        fireDB,
-                        `${primary_poll}/Pollings/stations/${item.id}`
-                      ),
-                      {
-                        status: updatedStatus,
-                      }
-                    );
+                    if (statusText === "Open") {
+                      // Update the 'open_time' field to the current time
+                      await updateDoc(
+                        doc(fireDB, `${primary_poll}/Pollings/stations/${item.id}`),
+                        {
+                          status: updatedStatus,
+                          open_time: openDateTime,
+                        }
+                      );
+                    } else if (statusText === "Closed") {
+                      // Update the 'close_time' field to the current time
+                      await updateDoc(
+                        doc(fireDB, `${primary_poll}/Pollings/stations/${item.id}`),
+                        {
+                          status: updatedStatus,
+                          close_time: openDateTime,
+                        }
+                      );
+                    }
 
                     // Perform any other actions you need
                     console.log("Status updated successfully.");
@@ -1063,8 +1072,8 @@ function AdminPage() {
                 return (
                   <tr key={item.id}>
                     <td style={{ ...smallfont }}>{item.name.toUpperCase()}</td>
-                    <td>19:00</td>
-                    <td>07:00</td>
+                    <td style={{ ...smallfont }}>{item.open_time && item.open_time.toDate().toLocaleTimeString().toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>{item.close_time && item.close_time.toDate().toLocaleTimeString().toUpperCase()}</td>
 
                     <td style={{ display: "flex", alignItems: "center" }}>
                       {isVoted ? (
