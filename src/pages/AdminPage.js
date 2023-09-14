@@ -397,6 +397,245 @@ function AdminPage() {
         id="uncontrolled-tab-example"
         className="mb-3"
       >
+               <Tab eventKey="v_turnout" title="VOTER TURNOUT">
+          <div className="d-flex justify-content-between"></div>
+          <table className="table mt-3">
+            <thead>
+              <tr>
+                <th>NAME</th>
+                <th>CLOSE-TIME</th>
+                <th>OPEN-TIME</th>
+                <th>STATUS</th>
+                <th>TOTAL-REGISTERED</th>
+                <th>TOTAL-VOTES</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {turnout.map((item) => {
+                const isVoted = item.name === pollstation;
+                const statusText = item.status ? "Open" : "Closed"; // Check the boolean value
+                const status = item.status;
+                const handleStatusChange = async () => {
+                  // Toggle the status when the checkbox is clicked
+                  const updatedStatus = !status;
+                  console.log("Updated Status:", updatedStatus);
+
+                  try {
+                    if (statusText === "Open") {
+                      // Update the 'open_time' field to the current time
+                      await updateDoc(
+                        doc(fireDB, `${primary_poll}/Pollings/stations/${item.id}`),
+                        {
+                          status: updatedStatus,
+                          open_time: openDateTime,
+                        }
+                      );
+                    } else if (statusText === "Closed") {
+                      // Update the 'close_time' field to the current time
+                      await updateDoc(
+                        doc(fireDB, `${primary_poll}/Pollings/stations/${item.id}`),
+                        {
+                          status: updatedStatus,
+                          close_time: openDateTime,
+                        }
+                      );
+                    }
+
+                    // Perform any other actions you need
+                    console.log("Status updated successfully.");
+                  } catch (error) {
+                    console.error("Error updating status:", error);
+                  }
+                  window.location.reload();
+                };
+
+                // CSS styles for the toggle button
+                const toggleButtonStyles = {
+                  display: "inline-block",
+                  width: "50px",
+                  height: "25px",
+                  borderRadius: "25px",
+                  backgroundColor: "#ccc",
+                  position: "relative",
+                  cursor: "pointer",
+                };
+
+                // CSS styles for the toggle indicator
+                const toggleIndicatorStyles = {
+                  width: "25px",
+                  height: "25px",
+                  borderRadius: "50%",
+                  backgroundColor: "#fff",
+                  position: "absolute",
+                  top: "0",
+                  left: "0",
+                  transition: "0.2s",
+                };
+
+                // CSS styles for the 'Open' and 'Closed' text
+                const statusTextStyles = {
+                  display: "inline-block",
+                  marginLeft: "10px",
+                };
+
+                return (
+                  <tr key={item.id}>
+                    <td style={{ ...smallfont }}>{item.name.toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>{item.open_time && item.open_time.toDate().toLocaleTimeString().toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>{item.close_time && item.close_time.toDate().toLocaleTimeString().toUpperCase()}</td>
+
+                    <td style={{ display: "flex", alignItems: "center" }}>
+                      {isVoted ? (
+                        <div>
+                          <button
+                            onClick={handleStatusChange}
+                            style={toggleButtonStyles}
+                          >
+                            <div
+                              style={{
+                                ...toggleIndicatorStyles,
+                                left: status ? "25px" : "0",
+                                backgroundColor: status ? "green" : "red",
+                              }}
+                            ></div>
+                          </button>
+                          <span
+                            style={{
+                              ...statusTextStyles,
+                              color: status ? "green" : "red",
+                            }}
+                          >
+                            {status ? "OPEN" : "CLOSED"}
+                          </span>
+                        </div>
+                      ) : (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FaBan
+                            color={editedRecord === item ? "gray" : "red"}
+                            size={30}
+                            disabled={editedRecord === item}
+                          />
+                          <span
+                            style={{
+                              ...statusTextStyles,
+                              color: "red",
+                            }}
+                          >
+                            NON-APPLICABLE
+                          </span>
+                        </div>
+                      )}
+                    </td>
+
+                    <td>{item.total_registered}</td>
+                    <td>{item.voters_count}</td>
+                    <td>
+                      {isVoted ? (
+                        <div style={actionIconsStyles}>
+                          <FaEdit
+                            onClick={() => editHandler3(item)}
+                            color={editedRecord === item ? "gray" : "blue"}
+                            size={30}
+                            disabled={editedRecord === item}
+                          />
+                        </div>
+                      ) : (
+                        <div style={actionIconsStyles}>
+                          <FaBan
+                            color={editedRecord === item ? "gray" : "red"}
+                            size={30}
+                            disabled={editedRecord === item}
+                          />
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <Modal show={show3} onHide={handleClose3}>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                {add ? "Add a product" : "ADD VOTER TURNOUT"}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {" "}
+              <div className="register-form">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                ></div>
+
+                <input
+                  type="text"
+                  value={product.name}
+                  className="form-control"
+                  placeholder="name"
+                  readOnly={true}
+                />
+
+                {/* <input
+                  type="text"
+                  value={product.open_time}
+                  className="form-control"
+                  placeholder="surname"
+                  readOnly={true}
+                /> */}
+
+                {/* <input
+                  type="text"
+                  value={product.close_time}
+                  className="form-control"
+                  placeholder="surname"
+                  readOnly={true}
+                /> */}
+
+                {/* <input
+                  type="text"
+                  value={product.status}
+                  className="form-control"
+                  placeholder="price"
+                  readOnly={true}
+                /> */}
+
+                <input
+                  type="text"
+                  value={product.total_registered}
+                  className="form-control"
+                  placeholder="category"
+                  readOnly={true}
+                  style={{ display: "none" }}
+                />
+
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Add Voter Turnout"
+                  onChange={(e) => {
+                    setProduct({
+                      ...product,
+                      voters_count: e.target.value,
+                    });
+                  }}
+                />
+                <hr />
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              {/* <button>Close</button> */}
+
+              <button onClick={updateturnout}>SAVE</button>
+            </Modal.Footer>
+          </Modal>
+        </Tab>
+        
         <Tab eventKey="products" title="MEMBERS OF PARLIAMENTS">
           <div className="d-flex justify-content-between"></div>
           <table className="table mt-3">
@@ -987,244 +1226,7 @@ function AdminPage() {
           </Modal>
         </Tab>
 
-        <Tab eventKey="v_turnout" title="VOTER TURNOUT">
-          <div className="d-flex justify-content-between"></div>
-          <table className="table mt-3">
-            <thead>
-              <tr>
-                <th>NAME</th>
-                <th>CLOSE-TIME</th>
-                <th>OPEN-TIME</th>
-                <th>STATUS</th>
-                <th>TOTAL-REGISTERED</th>
-                <th>TOTAL-VOTES</th>
-                <th>ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
-              {turnout.map((item) => {
-                const isVoted = item.name === pollstation;
-                const statusText = item.status ? "Open" : "Closed"; // Check the boolean value
-                const status = item.status;
-                const handleStatusChange = async () => {
-                  // Toggle the status when the checkbox is clicked
-                  const updatedStatus = !status;
-                  console.log("Updated Status:", updatedStatus);
-
-                  try {
-                    if (statusText === "Open") {
-                      // Update the 'open_time' field to the current time
-                      await updateDoc(
-                        doc(fireDB, `${primary_poll}/Pollings/stations/${item.id}`),
-                        {
-                          status: updatedStatus,
-                          open_time: openDateTime,
-                        }
-                      );
-                    } else if (statusText === "Closed") {
-                      // Update the 'close_time' field to the current time
-                      await updateDoc(
-                        doc(fireDB, `${primary_poll}/Pollings/stations/${item.id}`),
-                        {
-                          status: updatedStatus,
-                          close_time: openDateTime,
-                        }
-                      );
-                    }
-
-                    // Perform any other actions you need
-                    console.log("Status updated successfully.");
-                  } catch (error) {
-                    console.error("Error updating status:", error);
-                  }
-                  window.location.reload();
-                };
-
-                // CSS styles for the toggle button
-                const toggleButtonStyles = {
-                  display: "inline-block",
-                  width: "50px",
-                  height: "25px",
-                  borderRadius: "25px",
-                  backgroundColor: "#ccc",
-                  position: "relative",
-                  cursor: "pointer",
-                };
-
-                // CSS styles for the toggle indicator
-                const toggleIndicatorStyles = {
-                  width: "25px",
-                  height: "25px",
-                  borderRadius: "50%",
-                  backgroundColor: "#fff",
-                  position: "absolute",
-                  top: "0",
-                  left: "0",
-                  transition: "0.2s",
-                };
-
-                // CSS styles for the 'Open' and 'Closed' text
-                const statusTextStyles = {
-                  display: "inline-block",
-                  marginLeft: "10px",
-                };
-
-                return (
-                  <tr key={item.id}>
-                    <td style={{ ...smallfont }}>{item.name.toUpperCase()}</td>
-                    <td style={{ ...smallfont }}>{item.open_time && item.open_time.toDate().toLocaleTimeString().toUpperCase()}</td>
-                    <td style={{ ...smallfont }}>{item.close_time && item.close_time.toDate().toLocaleTimeString().toUpperCase()}</td>
-
-                    <td style={{ display: "flex", alignItems: "center" }}>
-                      {isVoted ? (
-                        <div>
-                          <button
-                            onClick={handleStatusChange}
-                            style={toggleButtonStyles}
-                          >
-                            <div
-                              style={{
-                                ...toggleIndicatorStyles,
-                                left: status ? "25px" : "0",
-                                backgroundColor: status ? "green" : "red",
-                              }}
-                            ></div>
-                          </button>
-                          <span
-                            style={{
-                              ...statusTextStyles,
-                              color: status ? "green" : "red",
-                            }}
-                          >
-                            {status ? "OPEN" : "CLOSED"}
-                          </span>
-                        </div>
-                      ) : (
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <FaBan
-                            color={editedRecord === item ? "gray" : "red"}
-                            size={30}
-                            disabled={editedRecord === item}
-                          />
-                          <span
-                            style={{
-                              ...statusTextStyles,
-                              color: "red",
-                            }}
-                          >
-                            NON-APPLICABLE
-                          </span>
-                        </div>
-                      )}
-                    </td>
-
-                    <td>{item.total_registered}</td>
-                    <td>{item.voters_count}</td>
-                    <td>
-                      {isVoted ? (
-                        <div style={actionIconsStyles}>
-                          <FaEdit
-                            onClick={() => editHandler3(item)}
-                            color={editedRecord === item ? "gray" : "blue"}
-                            size={30}
-                            disabled={editedRecord === item}
-                          />
-                        </div>
-                      ) : (
-                        <div style={actionIconsStyles}>
-                          <FaBan
-                            color={editedRecord === item ? "gray" : "red"}
-                            size={30}
-                            disabled={editedRecord === item}
-                          />
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-
-          <Modal show={show3} onHide={handleClose3}>
-            <Modal.Header closeButton>
-              <Modal.Title>
-                {add ? "Add a product" : "ADD VOTER TURNOUT"}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {" "}
-              <div className="register-form">
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                ></div>
-
-                <input
-                  type="text"
-                  value={product.name}
-                  className="form-control"
-                  placeholder="name"
-                  readOnly={true}
-                />
-
-                {/* <input
-                  type="text"
-                  value={product.open_time}
-                  className="form-control"
-                  placeholder="surname"
-                  readOnly={true}
-                /> */}
-
-                {/* <input
-                  type="text"
-                  value={product.close_time}
-                  className="form-control"
-                  placeholder="surname"
-                  readOnly={true}
-                /> */}
-
-                {/* <input
-                  type="text"
-                  value={product.status}
-                  className="form-control"
-                  placeholder="price"
-                  readOnly={true}
-                /> */}
-
-                <input
-                  type="text"
-                  value={product.total_registered}
-                  className="form-control"
-                  placeholder="category"
-                  readOnly={true}
-                  style={{ display: "none" }}
-                />
-
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Add Voter Turnout"
-                  onChange={(e) => {
-                    setProduct({
-                      ...product,
-                      voters_count: e.target.value,
-                    });
-                  }}
-                />
-                <hr />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              {/* <button>Close</button> */}
-
-              <button onClick={updateturnout}>SAVE</button>
-            </Modal.Footer>
-          </Modal>
-        </Tab>
+ 
       </Tabs>
     </Layout>
   );
