@@ -407,7 +407,7 @@ function AdminPage() {
                 <th>OPEN-TIME</th>
                 <th>STATUS</th>
                 <th>TOTAL-REGISTERED</th>
-                <th>TOTAL-VOTES</th>
+                <th>VOTER TURNOUT</th>
                 <th>ACTION</th>
               </tr>
             </thead>
