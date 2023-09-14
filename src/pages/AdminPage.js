@@ -331,12 +331,12 @@ function AdminPage() {
 
         const mpData = mpDocSnapshot.data();
         const updatedVotes = {
-          ...mpData.primary_votes,
-          [pollstation]: product.primary_votes[pollstation],
+          ...mpData.secondary_votes,
+          [pollstation]: product.secondary_votes[pollstation],
         };
 
         // Update the primary_votes field with the new votes
-        transaction.update(mpDocRef, { primary_votes: updatedVotes });
+        transaction.update(mpDocRef, { secondary_votes: updatedVotes });
       });
 
       toast.success("Bucopho Results captured successfully");
@@ -816,7 +816,7 @@ function AdminPage() {
             <tbody>
               {bucopho.map((item) => {
                 const isVoted =
-                  item.primary_votes && item.primary_votes[pollstation];
+                  item.secondary_votes && item.secondary_votes[pollstation];
                 return (
                   <tr key={item.id}>
                     <td>
@@ -968,8 +968,8 @@ function AdminPage() {
                   onChange={(e) => {
                     setProduct({
                       ...product,
-                      primary_votes: {
-                        ...product.primary_votes,
+                      secondary_votes: {
+                        ...product.secondary_votes,
                         [pollstation]: e.target.value,
                       },
                     });
