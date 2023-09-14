@@ -135,7 +135,7 @@ function PhoneSignInComponent({ setShowPhoneSignIn }) {
       <div id="recaptcha-container"></div>
       <div className="w-80 flex flex-col gap-4 rounded-lg p-4">
         <h1 className="text-center leading-normal text-black font-medium text-3xl mb-6">
-          EBC Votes Capturing - MAIN ELECTIONS
+          EBC Votes Capturing - Main Elections
         </h1>
         {showOTP ? (
           <>
