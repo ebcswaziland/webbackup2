@@ -21,14 +21,16 @@ function Header() {
     <div className="header">
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/">
-            <div>EBC RESULTS CAPTURING</div>
+        <Link className="navbar-brand" to="/">
+            <div >
+              EBC RESULTS CAPTURING <span style={{ marginLeft: "70%", textAlign: 'center' }}>{pollstation.toUpperCase()}</span>
+            </div>
           </Link>
 
-          <div className="nav-item" style={{ marginLeft: "70%" }}>
+          <div className="nav-item" style={{ marginLeft: "50%", fontSizeAdjust: '90px' }}>
             <Link className="nav-link" to="/" onClick={logout}>
               <div>
-                <bold>LOGOUT</bold>
+                {logouttext.toUpperCase()}
               </div>
             </Link>
           </div>
