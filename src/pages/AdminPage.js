@@ -403,8 +403,8 @@ function AdminPage() {
             <thead>
               <tr>
                 <th>NAME</th>
-                <th>CLOSE-TIME</th>
                 <th>OPEN-TIME</th>
+                <th>CLOSE-TIME</th>
                 <th>STATUS</th>
                 <th>TOTAL-REGISTERED</th>
                 <th>VOTER TURNOUT</th>
@@ -428,7 +428,7 @@ function AdminPage() {
                         doc(fireDB, `${primary_poll}/Pollings/stations/${item.id}`),
                         {
                           status: updatedStatus,
-                          open_time: openDateTime,
+                          close_time: openDateTime,
                         }
                       );
                     } else if (statusText === "Closed") {
@@ -437,7 +437,7 @@ function AdminPage() {
                         doc(fireDB, `${primary_poll}/Pollings/stations/${item.id}`),
                         {
                           status: updatedStatus,
-                          close_time: openDateTime,
+                          open_time: openDateTime,
                         }
                       );
                     }
