@@ -18,6 +18,8 @@ import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import Layout from "../components/Layout";
 import fireDB from "../fireConfig";
+import { useNavigate } from "react-router-dom";
+
 
 function AdminPage() {
   const [confirmationCount, setConfirmationCount] = useState(0);
@@ -55,6 +57,9 @@ function AdminPage() {
   const primary_poll = localStorage.getItem("primary_poll");
   const pollstation = localStorage.getItem("pollstation");
   const [hasVoted, setHasVoted] = useState(false);
+
+  //pdf download action buttons
+  const navigate = useNavigate();
 
   const getConfirmationMessage = () => {
     if (confirmationCount === 0) {
@@ -226,7 +231,7 @@ function AdminPage() {
         };
 
         setTurnoutIndvuna(mpData);
-        console.log("From indvuna Data: ", data.perfect);
+        console.log("From indvuna Data: ", data.votes.perfect);
       } else {
         console.log("Document does not exist for Indvuna");
       }
@@ -238,7 +243,7 @@ function AdminPage() {
     }
   }
 
-  async function getBucophoData2() {
+  async function getIndvunaData() {
     try {
       setLoading(true);
 
@@ -264,7 +269,7 @@ function AdminPage() {
         };
 
         setTurnoutBucopho(mpData);
-        console.log("From Bucopho Data: ", data.perfect);
+        console.log("From Bucopho Data: ", data.votes.perfect);
       } else {
         console.log("Document does not exist for Indvuna");
       }
@@ -327,21 +332,21 @@ function AdminPage() {
       const pascalCaseWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
       words= pascalCaseWords.join('_');
   
-      const docRef = doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count/Bucopho`);
+      const docRef = doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count/bucopho`);
       const docSnap = await getDoc(docRef);
   
       if (docSnap.exists()) {
         const data = docSnap.data();
         
         const mpData = {
-          perfect: data.perfect,
-          set_aside: data.set_aside,
-          spoilt: data.spoilt,
-          tenderd: data.tenderd,
+          perfect: data.votes.perfect,
+          set_aside: data.votes.set_aside,
+          spoilt: data.votes.spoilt,
+          tenderd: data.votes.tenderd,
         };
 
         setTurnoutBucopho(mpData);
-        console.log("Data From Bucopho: ", data.perfect);
+        console.log("Data From Bucopho: ", data.votes.perfect);
       } else {
         console.log("Document does not exist");
       }
@@ -425,7 +430,7 @@ function AdminPage() {
   };
 
   const editHandlerBucopho = () => {
-    setProduct(item);
+    // setProduct(item);
     setShowBucopho(true);
   };
 
@@ -561,7 +566,6 @@ function AdminPage() {
     getTinkhundlaData();
     getPollingsData();
     getBucophoData();
-    // getBucophoData2();
     getMPData();
     getIndvunaData();
     getBucophoTurnData();
@@ -674,6 +678,28 @@ function AdminPage() {
     fontWeight: "80%",
   };
 
+  const handleButtonClick = () => {
+    // Navigate to the /test route
+    navigate("/REPORT");
+  };
+
+  function DownloadButton() {
+    const buttonStyles = {
+      display: "inline-block",
+      padding: "10px 20px",
+      backgroundColor: "#007bff",
+      color: "#fff",
+      textDecoration: "none",
+      borderRadius: "4px",
+      fontSize: "16px",
+    };
+    return (
+      <button onClick={handleButtonClick} style={buttonStyles}>
+        GENERATE REPORT
+      </button>
+    );
+  }
+
   return (
     <Layout loading={loading}>
       <Tabs
@@ -682,6 +708,7 @@ function AdminPage() {
         className="mb-3"
       >
                <Tab eventKey="v_turnout" title="VOTER TURNOUT">
+           
           <div className="d-flex justify-content-between"></div>
           <table className="table mt-3">
             <thead>
@@ -689,7 +716,7 @@ function AdminPage() {
                 <th>NAME</th>
                 <th>OPEN-TIME</th>
                 <th>CLOSE-TIME</th>
-                <th>STATUS</th>
+                <th>VOTING STATUS</th>
                 <th>COUNTING-START</th>
                 <th>COUNTING-END</th>
                 <th>COUNT-STATUS</th>
@@ -1441,6 +1468,7 @@ function AdminPage() {
         </Tab>
         
         <Tab eventKey="products" title="MEMBERS OF PARLIAMENTS">
+        <DownloadButton />
           <div className="d-flex justify-content-between"></div>
           <table className="table mt-3">
             <thead>
@@ -1653,6 +1681,7 @@ function AdminPage() {
         </Tab>
 
         <Tab eventKey="orders" title="INDVUNA YENKHUNDLA">
+        <DownloadButton />
           <div className="d-flex justify-content-between"></div>
           <table className="table mt-3">
             <thead>
@@ -1843,6 +1872,7 @@ function AdminPage() {
         </Tab>
 
         <Tab eventKey="bucopho" title="BUCOPHO">
+        <DownloadButton />
           <div className="d-flex justify-content-between"></div>
           <table className="table mt-3">
             <thead>
