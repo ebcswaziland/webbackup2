@@ -425,7 +425,7 @@ function AdminPage() {
   };
 
   const editHandlerBucopho = () => {
-    // setProduct(item);
+    setProduct(item);
     setShowBucopho(true);
   };
 
