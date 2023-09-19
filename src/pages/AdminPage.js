@@ -226,7 +226,7 @@ function AdminPage() {
         };
 
         setTurnoutIndvuna(mpData);
-        console.log("From indvuna Data: ", data.votes.perfect);
+        console.log("From indvuna Data: ", data.perfect);
       } else {
         console.log("Document does not exist for Indvuna");
       }
