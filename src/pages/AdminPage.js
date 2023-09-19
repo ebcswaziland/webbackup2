@@ -33,11 +33,18 @@ function AdminPage() {
   const [show2, setShow2] = React.useState(false);
   const [show3, setShow3] = React.useState(false);
   const [show4, setShow4] = React.useState(false);
+  const [showMP, setShowMP] = React.useState(false);
+  const [showIndvuna, setShowIndvuna] = React.useState(false);
+  const [showBucopho, setShowBucopho] = React.useState(false);
+
 
   const [add, setAdd] = React.useState(false);
   const [tindvuna, setTindvuna] = React.useState([]);
   const [bucopho, setBucopho] = React.useState([]);
   const [turnout, setTurnout] = React.useState([]);
+  const [turnoutMP, setTurnoutMP] = React.useState("");
+  const [turnoutIndvuna, setTurnoutIndvuna] = React.useState([]);
+  const [turnoutBucopho, setTurnoutBucopho] = React.useState([]);
   const [MP, setMP] = React.useState([]);
   const [openDateTime, setOpenDateTime] = useState(new Date());
   const [station, setStation] = React.useState("");
@@ -131,10 +138,7 @@ function AdminPage() {
   };
 
   const [product, setProduct] = useState({
-    name: "",
-    price: 0,
-    imageUrl: "",
-    category: "",
+    
   });
 
   const handleClose = () => setShow(false);
@@ -142,6 +146,9 @@ function AdminPage() {
   const handleClose2 = () => setShow2(false);
   const handleClose3 = () => setShow3(false);
   const handleClose4 = () => setShow4(false);
+  const handleCloseMP = () => setShowMP(false);
+  const handleCloseIndvuna = () => setShowIndvuna(false);
+  const handleCloseBucopho = () => setShowBucopho(false);
   const handleShow2 = () => setShow2(true);
   console.log("Test Poll " + poll);
 
@@ -193,6 +200,159 @@ function AdminPage() {
       setLoading(false);
     }
   }
+  async function getIndvunaData() {
+    try {
+      setLoading(true);
+
+      let words = pollstation.toLowerCase().split(' ');
+      const pascalCaseWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+      words= pascalCaseWords.join('_');
+
+
+      console.log("Test2 Poll Lamgabhi_Primary_School " + poll);
+      console.log("Test3 Polliing stash " + words.replace(/[\s,]/g, '_'));
+  
+      const docRef = doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count/Indvuna`);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        
+        const mpData = {
+          perfect: data.perfect,
+          set_aside: data.set_aside,
+          spoilt: data.spoilt,
+          tenderd: data.tenderd,
+        };
+
+        setTurnoutIndvuna(mpData);
+        console.log("From indvuna Data: ", data.votes.perfect);
+      } else {
+        console.log("Document does not exist for Indvuna");
+      }
+  
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
+
+  async function getIndvunaData() {
+    try {
+      setLoading(true);
+
+      let words = pollstation.toLowerCase().split(' ');
+      const pascalCaseWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+      words= pascalCaseWords.join('_');
+
+
+      console.log("Test2 Poll Lamgabhi_Primary_School " + poll);
+      console.log("Test3 Polliing stash " + words.replace(/[\s,]/g, '_'));
+  
+      const docRef = doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count/Bucopho`);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        
+        const mpData = {
+          perfect: data.perfect,
+          set_aside: data.set_aside,
+          spoilt: data.spoilt,
+          tenderd: data.tenderd,
+        };
+
+        setTurnoutBucopho(mpData);
+        console.log("From Bucopho Data: ", data.votes.perfect);
+      } else {
+        console.log("Document does not exist for Indvuna");
+      }
+  
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
+
+
+  async function getMPData() {
+    try {
+      setLoading(true);
+      console.log("Test2 Poll " + poll);
+      console.log("Test3 Poll " + pollstation);
+ 
+
+      let words = pollstation.toLowerCase().split(' ');
+      const pascalCaseWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+      words= pascalCaseWords.join('_');
+  
+      const docRef = doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count/MP`);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        
+        const mpData = {
+          perfect: data.perfect,
+          set_aside: data.set_aside,
+          spoilt: data.spoilt,
+          tenderd: data.tenderd,
+        };
+
+        setTurnoutMP(mpData);
+        console.log("Data: ", data.votes.perfect);
+      } else {
+        console.log("Document does not exist");
+      }
+  
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
+
+
+  async function getBucophoTurnData() {
+    try {
+      setLoading(true);
+      console.log("Test2 Poll " + poll);
+      console.log("Test3 Poll " + pollstation);
+
+
+
+      let words = pollstation.toLowerCase().split(' ');
+      const pascalCaseWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+      words= pascalCaseWords.join('_');
+  
+      const docRef = doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count/bucopho`);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        
+        const mpData = {
+          perfect: data.votes.perfect,
+          set_aside: data.votes.set_aside,
+          spoilt: data.votes.spoilt,
+          tenderd: data.votes.tenderd,
+        };
+
+        setTurnoutBucopho(mpData);
+        console.log("Data From Bucopho: ", data.votes.perfect);
+      } else {
+        console.log("Document does not exist");
+      }
+  
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
+
 
   async function getTinkhundlaData() {
     try {
@@ -253,6 +413,20 @@ function AdminPage() {
   const editHandler3 = (item) => {
     setProduct(item);
     setShow3(true);
+  };
+  const editHandlerMP = (item) => {
+    setProduct(item);
+    setShowMP(true);
+  };
+
+  const editHandlerIndvuna = (item) => {
+    setProduct(item);
+    setShowIndvuna(true);
+  };
+
+  const editHandlerBucopho = () => {
+    // setProduct(item);
+    setShowBucopho(true);
   };
 
   const editHandler4 = (item) => {
@@ -347,20 +521,38 @@ function AdminPage() {
       toast.error("Failed to vote: " + error.message);
     }
   };
-
   const updateturnout = async () => {
     try {
       setLoading(true);
-      await setDoc(
-        doc(fireDB, `${primary_poll}/Pollings/stations`, product.id),
-        product
-      );
-      toast.success("Turnout has successfully added");
-      window.location.reload();
-      handleClose3();
+  
+      // Parse voters_count and total_registered as integers
+      const votersCount = parseInt(product.voters_count);
+      const totalRegistered = parseInt(product.total_registered);
+  
+      // Check if voters_count is less than or equal to total_registered
+      if (!isNaN(votersCount) && !isNaN(totalRegistered) && votersCount <= totalRegistered) {
+        // If the condition is met, create an object with the updated voters_count
+        const updatedProduct = { ...product, voters_count: votersCount };
+  
+        // Update the Firestore document with the updated object
+        await setDoc(
+          doc(fireDB, `${primary_poll}/Pollings/stations`, product.id),
+          product
+        );
+        toast.success("Turnout has successfully added");
+        
+        handleClose3();
+        window.location.reload();
+      } else {
+        // If the condition is not met or parsing fails, show an error message
+        toast.error("Voters count exceeds total registered or invalid numbers");
+        setLoading(false);
+        // window.location.reload();
+      }
     } catch (error) {
       setLoading(false);
-      toast.error("failed to add");
+      toast.error("Failed to add turnout");
+      window.location.reload();
     }
   };
 
@@ -369,7 +561,98 @@ function AdminPage() {
     getTinkhundlaData();
     getPollingsData();
     getBucophoData();
+    getMPData();
+    getIndvunaData();
+    getBucophoTurnData();
   }, []);
+
+
+  async function handleClick(item) {
+    if (typeof item.tenderd === 'undefined') {
+      console.error('The `tenderd` field is undefined.');
+      return;
+    }
+  
+    let words = pollstation.toLowerCase().split(' ');
+    const pascalCaseWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+    words = pascalCaseWords.join('_');
+  
+    try {
+      const voterCountRef = await setDoc(
+        doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count`, "MP"),
+        {
+          tenderd: parseInt(item.tenderd, 10),
+          spoilt: parseInt(item.spoilt, 10),
+          set_aside: parseInt(item.set_aside, 10),
+          perfect: parseInt(item.perferct, 10),
+          // Add more key-value pairs as needed
+        }
+      );
+  
+      toast.success("MP Results captured successfully");
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating document:', error);
+    }
+  }
+
+  async function handleClick2(item) {
+    if (typeof item.tenderd === 'undefined') {
+      console.error('The `tenderd` field is undefined.');
+      return;
+    }
+  
+    let words = pollstation.toLowerCase().split(' ');
+    const pascalCaseWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+    words = pascalCaseWords.join('_');
+  
+    try {
+      const voterCountRef = await setDoc(
+        doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count`, "Indvuna"),
+        {
+          tenderd: parseInt(item.tenderd, 10),
+          spoilt: parseInt(item.spoilt, 10),
+          set_aside: parseInt(item.set_aside, 10),
+          perfect: parseInt(item.perferct, 10),
+          // Add more key-value pairs as needed
+        }
+      );
+  
+      toast.success("MP Results captured successfully");
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating document:', error);
+    }
+  }
+
+  async function handleClick3(item) {
+    if (typeof item.tenderd === 'undefined') {
+      console.error('The `tenderd` field is undefined.');
+      return;
+    }
+  
+    let words = pollstation.toLowerCase().split(' ');
+    const pascalCaseWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+    words = pascalCaseWords.join('_');
+  
+    try {
+      const voterCountRef = await setDoc(
+        doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count`, "Bucopho"),
+        {
+          tenderd: parseInt(item.tenderd, 10),
+          spoilt: parseInt(item.spoilt, 10),
+          set_aside: parseInt(item.set_aside, 10),
+          perfect: parseInt(item.perferct, 10),
+          // Add more key-value pairs as needed
+        }
+      );
+  
+      toast.success("MP Results captured successfully");
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating document:', error);
+    }
+  }
 
   const tableStyles = {
     backgroundColor: "#fff",
@@ -406,6 +689,9 @@ function AdminPage() {
                 <th>OPEN-TIME</th>
                 <th>CLOSE-TIME</th>
                 <th>STATUS</th>
+                <th>COUNTING-START</th>
+                <th>COUNTING-END</th>
+                <th>COUNT-STATUS</th>
                 <th>TOTAL-REGISTERED</th>
                 <th>VOTER TURNOUT</th>
                 <th>ACTION</th>
@@ -414,8 +700,11 @@ function AdminPage() {
             <tbody>
               {turnout.map((item) => {
                 const isVoted = item.name === pollstation;
-                const statusText = item.status ? "Open" : "Closed"; // Check the boolean value
+                const statusText = item.status ? "Open" : "Closed"; 
+                const statusText2 = item.countStatus ? "Open" : "Closed"; // Check the boolean value
                 const status = item.status;
+                const dependancy = statusText === "Open";
+                const CountStatus = item.countStatus;
                 const handleStatusChange = async () => {
                   // Toggle the status when the checkbox is clicked
                   const updatedStatus = !status;
@@ -429,6 +718,7 @@ function AdminPage() {
                         {
                           status: updatedStatus,
                           close_time: openDateTime,
+                          countStart: openDateTime,
                         }
                       );
                     } else if (statusText === "Closed") {
@@ -438,6 +728,40 @@ function AdminPage() {
                         {
                           status: updatedStatus,
                           open_time: openDateTime,
+                        }
+                      );
+                    }
+
+                    // Perform any other actions you need
+                    console.log("Status updated successfully.");
+                  } catch (error) {
+                    console.error("Error updating status:", error);
+                  }
+                  window.location.reload();
+                };
+
+                const handleStatusChange2 = async () => {
+                  // Toggle the status when the checkbox is clicked
+                  const updatedStatus = !CountStatus;
+                  console.log("Updated Status:", updatedStatus);
+
+                  try {
+                    if (statusText2 === "Open") {
+                      // Update the 'open_time' field to the current time
+                      await updateDoc(
+                        doc(fireDB, `${primary_poll}/Pollings/stations/${item.id}`),
+                        {
+                          countStatus: updatedStatus,
+                          countEnd: openDateTime,
+                        }
+                      );
+                    } else if (statusText2 === "Closed") {
+                      // Update the 'close_time' field to the current time
+                      await updateDoc(
+                        doc(fireDB, `${primary_poll}/Pollings/stations/${item.id}`),
+                        {
+                          countStatus: updatedStatus,
+                          countStart: openDateTime,
                         }
                       );
                     }
@@ -482,10 +806,10 @@ function AdminPage() {
                 return (
                   <tr key={item.id}>
                     <td style={{ ...smallfont }}>{item.name.toUpperCase()}</td>
-                    <td style={{ ...smallfont }}>{item.open_time && item.open_time.toDate().toLocaleTimeString().toUpperCase()}</td>
-                    <td style={{ ...smallfont }}>{item.close_time && item.close_time.toDate().toLocaleTimeString().toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>{item.countStart && item.countStart.toDate().toLocaleTimeString().toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>{item.countEnd && item.countEnd.toDate().toLocaleTimeString().toUpperCase()}</td>
 
-                    <td style={{ display: "flex", alignItems: "center" }}>
+                    <td style={{ ...smallfont }}>
                       {isVoted ? (
                         <div>
                           <button
@@ -527,18 +851,65 @@ function AdminPage() {
                         </div>
                       )}
                     </td>
-
-                    <td>{item.total_registered}</td>
-                    <td>{item.voters_count}</td>
-                    <td>
+                    
+                    <td style={{ ...smallfont }}>{item.countStart && item.countStart.toDate().toLocaleTimeString().toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>{item.countEnd && item.countEnd.toDate().toLocaleTimeString().toUpperCase()}</td>
+                    
+                    <td style={{ ...smallfont }}>       {dependancy  ? (
+                       <div style={{ display: "flex", alignItems: "center" }}>
+                       <FaBan
+                         color={editedRecord === item ? "gray" : "red"}
+                         size={30}
+                         disabled={editedRecord === item}
+                       />
+                       <span
+                         style={{
+                           ...statusTextStyles,
+                           color: "red",
+                         }}
+                       >
+                         NON-APPLICABLE
+                       </span>
+                     </div>
+                      ) : (
+                        
+                         <div>
+                         <button
+                           onClick={handleStatusChange2}
+                           style={toggleButtonStyles}
+                         >
+                           <div
+                             style={{
+                               ...toggleIndicatorStyles,
+                               left: CountStatus ? "25px" : "0",
+                               backgroundColor: CountStatus ? "green" : "blue",
+                             }}
+                           ></div>
+                         </button>
+                         <span
+                           style={{
+                             ...statusTextStyles,
+                             color: CountStatus ? "green" : "blue",
+                           }}
+                         >
+                           {CountStatus ? "Counting-Process-Started" : "Counting-Process-Complete"}
+                         </span>
+                       </div>
+                      )}</td>
+                      <td style={{ ...smallfont }}>{item.total_registered}</td>      
+                    <td style={{ ...smallfont }}>{item.voters_count}</td>
+                    <td style={{ ...smallfont }}>
                       {isVoted ? (
                         <div style={actionIconsStyles}>
-                          <FaEdit
+                                                    
+                                                    <FaEdit
+
                             onClick={() => editHandler3(item)}
                             color={editedRecord === item ? "gray" : "blue"}
                             size={30}
                             disabled={editedRecord === item}
-                          />
+                        />
+                       
                         </div>
                       ) : (
                         <div style={actionIconsStyles}>
@@ -634,6 +1005,438 @@ function AdminPage() {
               <button onClick={updateturnout}>SAVE</button>
             </Modal.Footer>
           </Modal>
+
+          <Modal show={showMP} onHide={handleCloseMP}>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                {add ? "Add a product" : "ADD MP TURNOUT"}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {" "}
+              <div className="register-form">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                ></div>
+
+                  <input
+                    type="text"
+                    value={product.tenderd || ''} // Set a default empty string if product.tenderd is undefined
+                    className="form-control"
+                    placeholder="tenderd"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        tenderd: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.perferct || ''}
+                    className="form-control"
+                    placeholder="Perfect"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        perferct: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.set_aside || ''}
+                    className="form-control"
+                    placeholder="Set aside"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        set_aside: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.spoilt || ''}
+                    className="form-control"
+                    placeholder="Spoilt"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        spoilt: e.target.value,
+                      });
+                    }}
+                  />
+                                
+
+                {/* <input
+                  type="text"
+                  value={product.total_registered}
+                  className="form-control"
+                  placeholder="category"
+                  // readOnly={true}
+                  style={{ display: "none" }}
+                /> */}
+
+                {/* <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Add Voter Turnout"
+                  onChange={(e) => {
+                    setProduct({
+                      ...product,
+                      voters_count: e.target.value,
+                    });
+                  }}
+                /> */}
+                <hr />
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              {/* <button>Close</button> */}
+
+              <button onClick={() => handleClick(product)}>SAVE</button>
+            </Modal.Footer>
+          </Modal>
+
+
+          <Modal show={showIndvuna} onHide={handleCloseIndvuna}>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                {add ? "Add a product" : "ADD INDVUNA TURNOUT"}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {" "}
+              <div className="register-form">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                ></div>
+
+                  <input
+                    type="text"
+                    value={product.tenderd || ''} // Set a default empty string if product.tenderd is undefined
+                    className="form-control"
+                    placeholder="tenderd"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        tenderd: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.perferct || ''}
+                    className="form-control"
+                    placeholder="Perfect"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        perferct: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.set_aside || ''}
+                    className="form-control"
+                    placeholder="Set aside"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        set_aside: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.spoilt || ''}
+                    className="form-control"
+                    placeholder="Spoilt"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        spoilt: e.target.value,
+                      });
+                    }}
+                  />
+                                
+
+                {/* <input
+                  type="text"
+                  value={product.total_registered}
+                  className="form-control"
+                  placeholder="category"
+                  // readOnly={true}
+                  style={{ display: "none" }}
+                /> */}
+
+                {/* <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Add Voter Turnout"
+                  onChange={(e) => {
+                    setProduct({
+                      ...product,
+                      voters_count: e.target.value,
+                    });
+                  }}
+                /> */}
+                <hr />
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              {/* <button>Close</button> */}
+
+              <button onClick={() => handleClick2(product)}>SAVE</button>
+            </Modal.Footer>
+          </Modal>
+
+          <Modal show={showBucopho} onHide={handleCloseBucopho}>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                {add ? "Add a product" : "ADD BUCOPHO TURNOUT"}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {" "}
+              <div className="register-form">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                ></div>
+
+                  <input
+                    type="text"
+                    value={product.tenderd || ''} // Set a default empty string if product.tenderd is undefined
+                    className="form-control"
+                    placeholder="tenderd"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        tenderd: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.perferct || ''}
+                    className="form-control"
+                    placeholder="Perfect"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        perferct: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.set_aside || ''}
+                    className="form-control"
+                    placeholder="Set aside"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        set_aside: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.spoilt || ''}
+                    className="form-control"
+                    placeholder="Spoilt"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        spoilt: e.target.value,
+                      });
+                    }}
+                  />
+                                
+
+                {/* <input
+                  type="text"
+                  value={product.total_registered}
+                  className="form-control"
+                  placeholder="category"
+                  // readOnly={true}
+                  style={{ display: "none" }}
+                /> */}
+
+                {/* <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Add Voter Turnout"
+                  onChange={(e) => {
+                    setProduct({
+                      ...product,
+                      voters_count: e.target.value,
+                    });
+                  }}
+                /> */}
+                <hr />
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              {/* <button>Close</button> */}
+
+              <button onClick={() => handleClick3(product)}>SAVE</button>
+            </Modal.Footer>
+          </Modal>
+
+
+
+          <div style={{ marginTop: '5%' }}></div>
+
+          <div style={{ display: 'flex' }}>
+      <div style={{ flex: 2, marginRight: '10px' }}>
+      <table className="table table-bordered">
+                <thead>
+                <tr>
+                  <th>Member of Palirment</th>
+                  <th>VOTES</th>
+                </tr>
+                </thead>
+
+                  <tbody className="table table-bordered">
+                  <tr >
+                    <td>PERFECT</td>
+                    <td>{turnoutMP.perfect}</td>
+                  </tr>
+                  <tr>
+                    <td>SPOILT</td>
+                    <td>{turnoutMP.spoilt}</td>
+                  </tr>
+                  <tr>
+                    <td>SET-ASIDE</td>
+                    <td>{turnoutMP.set_aside}</td>
+                  </tr>
+                  <tr>
+                    <td>TERNDER</td>
+                    <td>{turnoutMP.tenderd}</td>
+                  </tr>
+                </tbody>
+        
+     
+              
+              </table>
+
+              <button
+                onClick={editHandlerMP}
+                size={30}
+              >MP Turnout
+              </button>
+            </div>
+
+
+
+            <div style={{ flex: 2, marginRight: '10px' }}>
+              <table className="table table-bordered bg-info">
+                <thead>
+                  <tr>
+                    <th>Indvuna Yenkhundla</th>
+                    <th>VOTES</th>
+                  </tr>
+                </thead>
+              
+                <tbody className="table table-bordered">
+                  <tr >
+                    <td>PERFECT</td>
+                    <td>{turnoutIndvuna.perfect}</td>
+                  </tr>
+                  <tr>
+                    <td>SPOILT</td>
+                    <td>{turnoutIndvuna.spoilt}</td>
+                  </tr>
+                  <tr>
+                    <td>SET-ASIDE</td>
+                    <td>{turnoutIndvuna.set_aside}</td>
+                  </tr>
+                  <tr>
+                    <td>TERNDER</td>
+                    <td>{turnoutIndvuna.tenderd}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <button
+
+                // onClick={() => editHandlerIndvuna()}
+                onClick={editHandlerIndvuna}
+                // color={editedRecord === item ? "gray" : "blue"}
+                size={30}
+                // disabled={editedRecord === item}
+                >Indvuna Turnout</button>
+
+            </div>
+
+
+
+            <div style={{ flex: 2, marginRight: '10px' }}>
+              {/* <h5>BUCOPHO Turnout</h5> */}
+              <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th>BUCOPHO</th>
+                  <th>VOTES</th>
+                </tr>
+                </thead>
+                
+                <tbody className="table table-bordered">
+                  <tr >
+                    <td>PERFECT</td>
+                    <td>{turnoutBucopho.perfect}</td>
+                  </tr>
+                  <tr>
+                    <td>SPOILT</td>
+                    <td>{turnoutBucopho.spoilt}</td>
+                  </tr>
+                  <tr>
+                    <td>SET-ASIDE</td>
+                    <td>{turnoutBucopho.set_aside}</td>
+                  </tr>
+                  <tr>
+                    <td>TERNDER</td>
+                    <td>{turnoutBucopho.tenderd}</td>
+                  </tr>
+                </tbody>
+               
+              </table>
+
+              <button
+                onClick={editHandlerBucopho}
+                size={30}
+              >BUCOPHO Turnout
+              </button>
+
+            </div>
+          </div>
+
+          
+
         </Tab>
         
         <Tab eventKey="products" title="MEMBERS OF PARLIAMENTS">
