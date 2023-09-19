@@ -327,21 +327,21 @@ function AdminPage() {
       const pascalCaseWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
       words= pascalCaseWords.join('_');
   
-      const docRef = doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count/bucopho`);
+      const docRef = doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count/Bucopho`);
       const docSnap = await getDoc(docRef);
   
       if (docSnap.exists()) {
         const data = docSnap.data();
         
         const mpData = {
-          perfect: data.votes.perfect,
-          set_aside: data.votes.set_aside,
-          spoilt: data.votes.spoilt,
-          tenderd: data.votes.tenderd,
+          perfect: data.perfect,
+          set_aside: data.set_aside,
+          spoilt: data.spoilt,
+          tenderd: data.tenderd,
         };
 
         setTurnoutBucopho(mpData);
-        console.log("Data From Bucopho: ", data.votes.perfect);
+        console.log("Data From Bucopho: ", data.perfect);
       } else {
         console.log("Document does not exist");
       }
@@ -561,7 +561,7 @@ function AdminPage() {
     getTinkhundlaData();
     getPollingsData();
     getBucophoData();
-    getBucophoData2();
+    // getBucophoData2();
     getMPData();
     getIndvunaData();
     getBucophoTurnData();
