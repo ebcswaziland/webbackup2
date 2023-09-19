@@ -238,7 +238,7 @@ function AdminPage() {
     }
   }
 
-  async function getBucophoData() {
+  async function getBucophoData2() {
     try {
       setLoading(true);
 
@@ -561,6 +561,7 @@ function AdminPage() {
     getTinkhundlaData();
     getPollingsData();
     getBucophoData();
+    getBucophoData2();
     getMPData();
     getIndvunaData();
     getBucophoTurnData();
