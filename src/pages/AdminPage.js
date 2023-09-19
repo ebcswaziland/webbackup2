@@ -238,7 +238,7 @@ function AdminPage() {
     }
   }
 
-  async function getIndvunaData() {
+  async function getBucophoData() {
     try {
       setLoading(true);
 
