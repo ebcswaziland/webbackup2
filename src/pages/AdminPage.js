@@ -264,7 +264,7 @@ function AdminPage() {
         };
 
         setTurnoutBucopho(mpData);
-        console.log("From Bucopho Data: ", data.votes.perfect);
+        console.log("From Bucopho Data: ", data.perfect);
       } else {
         console.log("Document does not exist for Indvuna");
       }
