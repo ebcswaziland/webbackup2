@@ -224,14 +224,14 @@ function AdminPage() {
         const data = docSnap.data();
         
         const mpData = {
-          perfect: data.perfect,
-          set_aside: data.set_aside,
+          valid: data.valid,
+          invalid: data.invalid,
           spoilt: data.spoilt,
-          tenderd: data.tenderd,
+          tendered: data.tendered,
         };
 
         setTurnoutIndvuna(mpData);
-        console.log("From indvuna Data: ", data.votes.perfect);
+        console.log("From indvuna Data: ", data.valid);
       } else {
         console.log("Document does not exist for Indvuna");
       }
@@ -243,7 +243,7 @@ function AdminPage() {
     }
   }
 
-  async function getIndvunaData() {
+  async function getIndvunaData2() {
     try {
       setLoading(true);
 
@@ -262,14 +262,14 @@ function AdminPage() {
         const data = docSnap.data();
         
         const mpData = {
-          perfect: data.perfect,
-          set_aside: data.set_aside,
+          valid: data.valid,
+          invalid: data.invalid,
           spoilt: data.spoilt,
-          tenderd: data.tenderd,
+          tendered: data.tendered,
         };
 
         setTurnoutBucopho(mpData);
-        console.log("From Bucopho Data: ", data.votes.perfect);
+        console.log("From Bucopho Data: ", data.votes.valid);
       } else {
         console.log("Document does not exist for Indvuna");
       }
@@ -300,14 +300,14 @@ function AdminPage() {
         const data = docSnap.data();
         
         const mpData = {
-          perfect: data.perfect,
-          set_aside: data.set_aside,
+          valid: data.valid,
+          invalid: data.invalid,
           spoilt: data.spoilt,
-          tenderd: data.tenderd,
+          tendered: data.tendered,
         };
 
         setTurnoutMP(mpData);
-        console.log("Data: ", data.votes.perfect);
+        console.log("Data: ", data.votes.valid);
       } else {
         console.log("Document does not exist");
       }
@@ -339,14 +339,14 @@ function AdminPage() {
         const data = docSnap.data();
         
         const mpData = {
-          perfect: data.votes.perfect,
-          set_aside: data.votes.set_aside,
+          valid: data.votes.valid,
+          invalid: data.votes.invalid,
           spoilt: data.votes.spoilt,
-          tenderd: data.votes.tenderd,
+          tendered: data.votes.tendered,
         };
 
         setTurnoutBucopho(mpData);
-        console.log("Data From Bucopho: ", data.votes.perfect);
+        console.log("Data From Bucopho: ", data.votes.valid);
       } else {
         console.log("Document does not exist");
       }
@@ -429,8 +429,8 @@ function AdminPage() {
     setShowIndvuna(true);
   };
 
-  const editHandlerBucopho = () => {
-    // setProduct(item);
+  const editHandlerBucopho = (item) => {
+    setProduct(item);
     setShowBucopho(true);
   };
 
@@ -568,13 +568,14 @@ function AdminPage() {
     getBucophoData();
     getMPData();
     getIndvunaData();
+    getIndvunaData2();
     getBucophoTurnData();
   }, []);
 
 
   async function handleClick(item) {
-    if (typeof item.tenderd === 'undefined') {
-      console.error('The `tenderd` field is undefined.');
+    if (typeof item.tendered === 'undefined') {
+      console.error('The `tendered` field is undefined.');
       return;
     }
   
@@ -586,10 +587,10 @@ function AdminPage() {
       const voterCountRef = await setDoc(
         doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count`, "MP"),
         {
-          tenderd: parseInt(item.tenderd, 10),
+          tendered: parseInt(item.tendered, 10),
           spoilt: parseInt(item.spoilt, 10),
-          set_aside: parseInt(item.set_aside, 10),
-          perfect: parseInt(item.perferct, 10),
+          invalid: parseInt(item.invalid, 10),
+          valid: parseInt(item.valid, 10),
           // Add more key-value pairs as needed
         }
       );
@@ -602,8 +603,8 @@ function AdminPage() {
   }
 
   async function handleClick2(item) {
-    if (typeof item.tenderd === 'undefined') {
-      console.error('The `tenderd` field is undefined.');
+    if (typeof item.tendered === 'undefined') {
+      console.error('The `tendered` field is undefined.');
       return;
     }
   
@@ -615,10 +616,10 @@ function AdminPage() {
       const voterCountRef = await setDoc(
         doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count`, "Indvuna"),
         {
-          tenderd: parseInt(item.tenderd, 10),
+          tendered: parseInt(item.tendered, 10),
           spoilt: parseInt(item.spoilt, 10),
-          set_aside: parseInt(item.set_aside, 10),
-          perfect: parseInt(item.perferct, 10),
+          invalid: parseInt(item.invalid, 10),
+          valid: parseInt(item.valid, 10),
           // Add more key-value pairs as needed
         }
       );
@@ -631,8 +632,8 @@ function AdminPage() {
   }
 
   async function handleClick3(item) {
-    if (typeof item.tenderd === 'undefined') {
-      console.error('The `tenderd` field is undefined.');
+    if (typeof item.tendered === 'undefined') {
+      console.error('The `tendered` field is undefined.');
       return;
     }
   
@@ -644,10 +645,10 @@ function AdminPage() {
       const voterCountRef = await setDoc(
         doc(fireDB, `${primary_poll}/Pollings/stations/${words.replace(/[\s,]/g, '_')}/voter_count`, "Bucopho"),
         {
-          tenderd: parseInt(item.tenderd, 10),
+          tendered: parseInt(item.tendered, 10),
           spoilt: parseInt(item.spoilt, 10),
-          set_aside: parseInt(item.set_aside, 10),
-          perfect: parseInt(item.perferct, 10),
+          invalid: parseInt(item.invalid, 10),
+          valid: parseInt(item.valid, 10),
           // Add more key-value pairs as needed
         }
       );
@@ -731,7 +732,8 @@ function AdminPage() {
                 const statusText = item.status ? "Open" : "Closed"; 
                 const statusText2 = item.countStatus ? "Open" : "Closed"; // Check the boolean value
                 const status = item.status;
-                const dependancy = statusText === "Open";
+                const status2 = item.status;
+                const dependancy =  item.name === pollstation;
                 const CountStatus = item.countStatus;
                 const handleStatusChange = async () => {
                   // Toggle the status when the checkbox is clicked
@@ -834,11 +836,12 @@ function AdminPage() {
                 return (
                   <tr key={item.id}>
                     <td style={{ ...smallfont }}>{item.name.toUpperCase()}</td>
-                    <td style={{ ...smallfont }}>{item.countStart && item.countStart.toDate().toLocaleTimeString().toUpperCase()}</td>
-                    <td style={{ ...smallfont }}>{item.countEnd && item.countEnd.toDate().toLocaleTimeString().toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>{item.open_time && item.open_time.toDate().toLocaleTimeString().toUpperCase()}</td>
+                    <td style={{ ...smallfont }}>{item.close_time && item.close_time.toDate().toLocaleTimeString().toUpperCase()}</td>
 
                     <td style={{ ...smallfont }}>
                       {isVoted ? (
+                        
                         <div>
                           <button
                             onClick={handleStatusChange}
@@ -861,6 +864,7 @@ function AdminPage() {
                             {status ? "OPEN" : "CLOSED"}
                           </span>
                         </div>
+
                       ) : (
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <FaBan
@@ -877,57 +881,64 @@ function AdminPage() {
                             NON-APPLICABLE
                           </span>
                         </div>
+
+                      
                       )}
                     </td>
                     
                     <td style={{ ...smallfont }}>{item.countStart && item.countStart.toDate().toLocaleTimeString().toUpperCase()}</td>
                     <td style={{ ...smallfont }}>{item.countEnd && item.countEnd.toDate().toLocaleTimeString().toUpperCase()}</td>
                     
-                    <td style={{ ...smallfont }}>       {dependancy  ? (
-                       <div style={{ display: "flex", alignItems: "center" }}>
-                       <FaBan
-                         color={editedRecord === item ? "gray" : "red"}
-                         size={30}
-                         disabled={editedRecord === item}
-                       />
-                       <span
-                         style={{
-                           ...statusTextStyles,
-                           color: "red",
-                         }}
-                       >
-                         NON-APPLICABLE
-                       </span>
-                     </div>
-                      ) : (
+                    <td style={{ ...smallfont }}>
+                      {dependancy ? (
                         
-                         <div>
-                         <button
-                           onClick={handleStatusChange2}
-                           style={toggleButtonStyles}
-                         >
-                           <div
-                             style={{
-                               ...toggleIndicatorStyles,
-                               left: CountStatus ? "25px" : "0",
-                               backgroundColor: CountStatus ? "green" : "blue",
-                             }}
-                           ></div>
-                         </button>
-                         <span
-                           style={{
-                             ...statusTextStyles,
-                             color: CountStatus ? "green" : "blue",
-                           }}
-                         >
-                           {CountStatus ? "Counting-Process-Started" : "Counting-Process-Complete"}
-                         </span>
-                       </div>
-                      )}</td>
+                        <div>
+                          <button
+                            onClick={handleStatusChange2}
+                            style={toggleButtonStyles}
+                          >
+                            <div
+                              style={{
+                                ...toggleIndicatorStyles,
+                                left: CountStatus ? "25px" : "0",
+                                backgroundColor: CountStatus ? "green" : "red",
+                              }}
+                            ></div>
+                          </button>
+                          <span
+                            style={{
+                              ...statusTextStyles,
+                              color: CountStatus ? "green" : "red",
+                            }}
+                          >
+                            {CountStatus ? "OPEN" : "CLOSED"}
+                          </span>
+                        </div>
+
+                      ) : (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FaBan
+                            color={editedRecord === item ? "gray" : "red"}
+                            size={30}
+                            disabled={editedRecord === item}
+                          />
+                          <span
+                            style={{
+                              ...statusTextStyles,
+                              color: "red",
+                            }}
+                          >
+                            NON-APPLICABLE
+                          </span>
+                        </div>
+
+                      
+                      )}
+                    </td>
                       <td style={{ ...smallfont }}>{item.total_registered}</td>      
                     <td style={{ ...smallfont }}>{item.voters_count}</td>
                     <td style={{ ...smallfont }}>
-                      {isVoted ? (
+                      {dependancy ? (
                         <div style={actionIconsStyles}>
                                                     
                                                     <FaEdit
@@ -1053,39 +1064,39 @@ function AdminPage() {
 
                   <input
                     type="text"
-                    value={product.tenderd || ''} // Set a default empty string if product.tenderd is undefined
+                    value={product.tendered || ''} // Set a default empty string if product.tendered is undefined
                     className="form-control"
-                    placeholder="tenderd"
+                    placeholder="Tendered"
                     onChange={(e) => {
                       setProduct({
                         ...product,
-                        tenderd: e.target.value,
+                        tendered: e.target.value,
                       });
                     }}
                   />
 
                   <input
                     type="text"
-                    value={product.perferct || ''}
+                    value={product.valid || ''}
                     className="form-control"
-                    placeholder="Perfect"
+                    placeholder="Valid"
                     onChange={(e) => {
                       setProduct({
                         ...product,
-                        perferct: e.target.value,
+                        valid: e.target.value,
                       });
                     }}
                   />
 
                   <input
                     type="text"
-                    value={product.set_aside || ''}
+                    value={product.invalid || ''}
                     className="form-control"
                     placeholder="Set aside"
                     onChange={(e) => {
                       setProduct({
                         ...product,
-                        set_aside: e.target.value,
+                        invalid: e.target.value,
                       });
                     }}
                   />
@@ -1154,39 +1165,39 @@ function AdminPage() {
 
                   <input
                     type="text"
-                    value={product.tenderd || ''} // Set a default empty string if product.tenderd is undefined
+                    value={product.tendered || ''} // Set a default empty string if product.tendered is undefined
                     className="form-control"
-                    placeholder="tenderd"
+                    placeholder="Tendered"
                     onChange={(e) => {
                       setProduct({
                         ...product,
-                        tenderd: e.target.value,
+                        tendered: e.target.value,
                       });
                     }}
                   />
 
                   <input
                     type="text"
-                    value={product.perferct || ''}
+                    value={product.valid || ''}
                     className="form-control"
-                    placeholder="Perfect"
+                    placeholder="Valid"
                     onChange={(e) => {
                       setProduct({
                         ...product,
-                        perferct: e.target.value,
+                        valid: e.target.value,
                       });
                     }}
                   />
 
                   <input
                     type="text"
-                    value={product.set_aside || ''}
+                    value={product.invalid || ''}
                     className="form-control"
                     placeholder="Set aside"
                     onChange={(e) => {
                       setProduct({
                         ...product,
-                        set_aside: e.target.value,
+                        invalid: e.target.value,
                       });
                     }}
                   />
@@ -1254,39 +1265,39 @@ function AdminPage() {
 
                   <input
                     type="text"
-                    value={product.tenderd || ''} // Set a default empty string if product.tenderd is undefined
+                    value={product.tendered || ''} // Set a default empty string if product.tendered is undefined
                     className="form-control"
-                    placeholder="tenderd"
+                    placeholder="Tendered"
                     onChange={(e) => {
                       setProduct({
                         ...product,
-                        tenderd: e.target.value,
+                        tendered: e.target.value,
                       });
                     }}
                   />
 
                   <input
                     type="text"
-                    value={product.perferct || ''}
+                    value={product.valid || ''}
                     className="form-control"
-                    placeholder="Perfect"
+                    placeholder="Valid"
                     onChange={(e) => {
                       setProduct({
                         ...product,
-                        perferct: e.target.value,
+                        valid: e.target.value,
                       });
                     }}
                   />
 
                   <input
                     type="text"
-                    value={product.set_aside || ''}
+                    value={product.invalid || ''}
                     className="form-control"
-                    placeholder="Set aside"
+                    placeholder="Invalid"
                     onChange={(e) => {
                       setProduct({
                         ...product,
-                        set_aside: e.target.value,
+                        invalid: e.target.value,
                       });
                     }}
                   />
@@ -1351,20 +1362,20 @@ function AdminPage() {
 
                   <tbody className="table table-bordered">
                   <tr >
-                    <td>PERFECT</td>
-                    <td>{turnoutMP.perfect}</td>
+                    <td>VALID</td>
+                    <td>{turnoutMP.valid}</td>
                   </tr>
                   <tr>
                     <td>SPOILT</td>
                     <td>{turnoutMP.spoilt}</td>
                   </tr>
                   <tr>
-                    <td>SET-ASIDE</td>
-                    <td>{turnoutMP.set_aside}</td>
+                    <td>INVALID</td>
+                    <td>{turnoutMP.invalid}</td>
                   </tr>
                   <tr>
-                    <td>TERNDER</td>
-                    <td>{turnoutMP.tenderd}</td>
+                    <td>TENDERED</td>
+                    <td>{turnoutMP.tendered}</td>
                   </tr>
                 </tbody>
         
@@ -1392,20 +1403,20 @@ function AdminPage() {
               
                 <tbody className="table table-bordered">
                   <tr >
-                    <td>PERFECT</td>
-                    <td>{turnoutIndvuna.perfect}</td>
+                    <td>VALID</td>
+                    <td>{turnoutIndvuna.valid}</td>
                   </tr>
                   <tr>
                     <td>SPOILT</td>
                     <td>{turnoutIndvuna.spoilt}</td>
                   </tr>
                   <tr>
-                    <td>SET-ASIDE</td>
-                    <td>{turnoutIndvuna.set_aside}</td>
+                    <td>INVALID</td>
+                    <td>{turnoutIndvuna.invalid}</td>
                   </tr>
                   <tr>
-                    <td>TERNDER</td>
-                    <td>{turnoutIndvuna.tenderd}</td>
+                    <td>TENDERED</td>
+                    <td>{turnoutIndvuna.tendered}</td>
                   </tr>
                 </tbody>
               </table>
@@ -1417,7 +1428,7 @@ function AdminPage() {
                 // color={editedRecord === item ? "gray" : "blue"}
                 size={30}
                 // disabled={editedRecord === item}
-                >Indvuna Turnout</button>
+                >INDVUNA Turnout</button>
 
             </div>
 
@@ -1435,20 +1446,20 @@ function AdminPage() {
                 
                 <tbody className="table table-bordered">
                   <tr >
-                    <td>PERFECT</td>
-                    <td>{turnoutBucopho.perfect}</td>
+                    <td>VALID</td>
+                    <td>{turnoutBucopho.valid}</td>
                   </tr>
                   <tr>
                     <td>SPOILT</td>
                     <td>{turnoutBucopho.spoilt}</td>
                   </tr>
                   <tr>
-                    <td>SET-ASIDE</td>
-                    <td>{turnoutBucopho.set_aside}</td>
+                    <td>INVALID</td>
+                    <td>{turnoutBucopho.invalid}</td>
                   </tr>
                   <tr>
-                    <td>TERNDER</td>
-                    <td>{turnoutBucopho.tenderd}</td>
+                    <td>TENDERED</td>
+                    <td>{turnoutBucopho.tendered}</td>
                   </tr>
                 </tbody>
                
