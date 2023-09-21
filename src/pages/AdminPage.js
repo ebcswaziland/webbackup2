@@ -1355,7 +1355,7 @@ function AdminPage() {
       <table className="table table-bordered">
                 <thead>
                 <tr>
-                  <th>Member of Palirment</th>
+                  <th>MEMBERS OF PARLIAMENT</th>
                   <th>VOTES</th>
                 </tr>
                 </thead>
@@ -1396,7 +1396,7 @@ function AdminPage() {
               <table className="table table-bordered bg-info">
                 <thead>
                   <tr>
-                    <th>Indvuna Yenkhundla</th>
+                    <th>INDVUNA YENKHUNDLA</th>
                     <th>VOTES</th>
                   </tr>
                 </thead>
