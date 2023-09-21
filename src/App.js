@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import OrdersPage from "./pages/OrdersPage";
 import AdminPage from "./pages/AdminPage";
 import registerApp from "./pages/register";
+import Reports from "./pages/Reports";
 
 function App() {
   return (
@@ -65,6 +66,15 @@ function App() {
             element={
               <ProtectedRoutes>
                 <AdminPage />
+              </ProtectedRoutes>
+            }
+          />
+             <Route
+            path="/REPORT"
+            exact
+            element={
+              <ProtectedRoutes>
+                <Reports />
               </ProtectedRoutes>
             }
           />
