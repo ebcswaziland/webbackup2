@@ -1366,12 +1366,12 @@ function AdminPage() {
                     <td>{turnoutMP.valid}</td>
                   </tr>
                   <tr>
-                    <td>SPOILT</td>
-                    <td>{turnoutMP.spoilt}</td>
-                  </tr>
-                  <tr>
                     <td>INVALID</td>
                     <td>{turnoutMP.invalid}</td>
+                  </tr>
+                  <tr>
+                    <td>SPOILT</td>
+                    <td>{turnoutMP.spoilt}</td>
                   </tr>
                   <tr>
                     <td>TENDERED</td>
@@ -1407,12 +1407,12 @@ function AdminPage() {
                     <td>{turnoutIndvuna.valid}</td>
                   </tr>
                   <tr>
-                    <td>SPOILT</td>
-                    <td>{turnoutIndvuna.spoilt}</td>
-                  </tr>
-                  <tr>
                     <td>INVALID</td>
                     <td>{turnoutIndvuna.invalid}</td>
+                  </tr>
+                  <tr>
+                    <td>SPOILT</td>
+                    <td>{turnoutIndvuna.spoilt}</td>
                   </tr>
                   <tr>
                     <td>TENDERED</td>
@@ -1450,12 +1450,12 @@ function AdminPage() {
                     <td>{turnoutBucopho.valid}</td>
                   </tr>
                   <tr>
-                    <td>SPOILT</td>
-                    <td>{turnoutBucopho.spoilt}</td>
-                  </tr>
-                  <tr>
                     <td>INVALID</td>
                     <td>{turnoutBucopho.invalid}</td>
+                  </tr>
+                  <tr>
+                    <td>SPOILT</td>
+                    <td>{turnoutBucopho.spoilt}</td>
                   </tr>
                   <tr>
                     <td>TENDERED</td>
