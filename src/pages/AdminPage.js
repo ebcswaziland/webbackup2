@@ -681,7 +681,7 @@ function AdminPage() {
 
   const handleButtonClick = () => {
     // Navigate to the /test route
-    navigate("/REPORT");
+    navigate("/REPORT.pdf");
   };
 
   function DownloadButton() {
