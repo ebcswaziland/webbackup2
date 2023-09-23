@@ -707,11 +707,15 @@ function AdminPage() {
         defaultActiveKey="v_turnout"
         id="uncontrolled-tab-example"
         className="mb-3"
+        style={{ marginTop: '20px' }}
       >
                <Tab eventKey="v_turnout" title="VOTER TURNOUT">
            
-          <div className="d-flex justify-content-between"></div>
-          <table className="table mt-3">
+          <div
+            className="d-flex justify-content-between"
+            style={{ overflowX: "auto" }}
+          >
+         <table className="table mt-3">
             <thead>
               <tr>
                 <th>NAME</th>
@@ -911,7 +915,7 @@ function AdminPage() {
                               color: CountStatus ? "green" : "red",
                             }}
                           >
-                            {CountStatus ? "OPEN" : "CLOSED"}
+                            {CountStatus ? "STARTED" : "NOT STARTED"}
                           </span>
                         </div>
 
@@ -965,7 +969,7 @@ function AdminPage() {
               })}
             </tbody>
           </table>
-
+</div>
           <Modal show={show3} onHide={handleClose3}>
             <Modal.Header closeButton>
               <Modal.Title>
@@ -991,30 +995,6 @@ function AdminPage() {
                   readOnly={true}
                 />
 
-                {/* <input
-                  type="text"
-                  value={product.open_time}
-                  className="form-control"
-                  placeholder="surname"
-                  readOnly={true}
-                /> */}
-
-                {/* <input
-                  type="text"
-                  value={product.close_time}
-                  className="form-control"
-                  placeholder="surname"
-                  readOnly={true}
-                /> */}
-
-                {/* <input
-                  type="text"
-                  value={product.status}
-                  className="form-control"
-                  placeholder="price"
-                  readOnly={true}
-                /> */}
-
                 <input
                   type="text"
                   value={product.total_registered}
@@ -1025,16 +1005,17 @@ function AdminPage() {
                 />
 
                 <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Add Voter Turnout"
-                  onChange={(e) => {
-                    setProduct({
-                      ...product,
-                      voters_count: e.target.value,
-                    });
-                  }}
-                />
+            type="number"
+            className="form-control"
+            placeholder="Add Voter Turnout"
+            required={true}
+            onChange={(e) => {
+              setProduct({
+                ...product,
+                voters_count: e.target.value,
+              });
+            }}
+          />
                 <hr />
               </div>
             </Modal.Body>
@@ -1048,7 +1029,7 @@ function AdminPage() {
           <Modal show={showMP} onHide={handleCloseMP}>
             <Modal.Header closeButton>
               <Modal.Title>
-                {add ? "Add a product" : "ADD MP TURNOUT"}
+                {add ? "Add a product" : "ADD MP BALLOT COUNT"}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -1062,219 +1043,7 @@ function AdminPage() {
                   }}
                 ></div>
 
-                  <input
-                    type="text"
-                    value={product.tendered || ''} // Set a default empty string if product.tendered is undefined
-                    className="form-control"
-                    placeholder="Tendered"
-                    onChange={(e) => {
-                      setProduct({
-                        ...product,
-                        tendered: e.target.value,
-                      });
-                    }}
-                  />
-
-                  <input
-                    type="text"
-                    value={product.valid || ''}
-                    className="form-control"
-                    placeholder="Valid"
-                    onChange={(e) => {
-                      setProduct({
-                        ...product,
-                        valid: e.target.value,
-                      });
-                    }}
-                  />
-
-                  <input
-                    type="text"
-                    value={product.invalid || ''}
-                    className="form-control"
-                    placeholder="Set aside"
-                    onChange={(e) => {
-                      setProduct({
-                        ...product,
-                        invalid: e.target.value,
-                      });
-                    }}
-                  />
-
-                  <input
-                    type="text"
-                    value={product.spoilt || ''}
-                    className="form-control"
-                    placeholder="Spoilt"
-                    onChange={(e) => {
-                      setProduct({
-                        ...product,
-                        spoilt: e.target.value,
-                      });
-                    }}
-                  />
-                                
-
-                {/* <input
-                  type="text"
-                  value={product.total_registered}
-                  className="form-control"
-                  placeholder="category"
-                  // readOnly={true}
-                  style={{ display: "none" }}
-                /> */}
-
-                {/* <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Add Voter Turnout"
-                  onChange={(e) => {
-                    setProduct({
-                      ...product,
-                      voters_count: e.target.value,
-                    });
-                  }}
-                /> */}
-                <hr />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              {/* <button>Close</button> */}
-
-              <button onClick={() => handleClick(product)}>SAVE</button>
-            </Modal.Footer>
-          </Modal>
-
-
-          <Modal show={showIndvuna} onHide={handleCloseIndvuna}>
-            <Modal.Header closeButton>
-              <Modal.Title>
-                {add ? "Add a product" : "ADD INDVUNA TURNOUT"}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {" "}
-              <div className="register-form">
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                ></div>
-
-                  <input
-                    type="text"
-                    value={product.tendered || ''} // Set a default empty string if product.tendered is undefined
-                    className="form-control"
-                    placeholder="Tendered"
-                    onChange={(e) => {
-                      setProduct({
-                        ...product,
-                        tendered: e.target.value,
-                      });
-                    }}
-                  />
-
-                  <input
-                    type="text"
-                    value={product.valid || ''}
-                    className="form-control"
-                    placeholder="Valid"
-                    onChange={(e) => {
-                      setProduct({
-                        ...product,
-                        valid: e.target.value,
-                      });
-                    }}
-                  />
-
-                  <input
-                    type="text"
-                    value={product.invalid || ''}
-                    className="form-control"
-                    placeholder="Set aside"
-                    onChange={(e) => {
-                      setProduct({
-                        ...product,
-                        invalid: e.target.value,
-                      });
-                    }}
-                  />
-
-                  <input
-                    type="text"
-                    value={product.spoilt || ''}
-                    className="form-control"
-                    placeholder="Spoilt"
-                    onChange={(e) => {
-                      setProduct({
-                        ...product,
-                        spoilt: e.target.value,
-                      });
-                    }}
-                  />
-                                
-
-                {/* <input
-                  type="text"
-                  value={product.total_registered}
-                  className="form-control"
-                  placeholder="category"
-                  // readOnly={true}
-                  style={{ display: "none" }}
-                /> */}
-
-                {/* <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Add Voter Turnout"
-                  onChange={(e) => {
-                    setProduct({
-                      ...product,
-                      voters_count: e.target.value,
-                    });
-                  }}
-                /> */}
-                <hr />
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              {/* <button>Close</button> */}
-
-              <button onClick={() => handleClick2(product)}>SAVE</button>
-            </Modal.Footer>
-          </Modal>
-
-          <Modal show={showBucopho} onHide={handleCloseBucopho}>
-            <Modal.Header closeButton>
-              <Modal.Title>
-                {add ? "Add a product" : "ADD BUCOPHO TURNOUT"}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {" "}
-              <div className="register-form">
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                ></div>
-
-                  <input
-                    type="text"
-                    value={product.tendered || ''} // Set a default empty string if product.tendered is undefined
-                    className="form-control"
-                    placeholder="Tendered"
-                    onChange={(e) => {
-                      setProduct({
-                        ...product,
-                        tendered: e.target.value,
-                      });
-                    }}
-                  />
+                 
 
                   <input
                     type="text"
@@ -1314,28 +1083,185 @@ function AdminPage() {
                       });
                     }}
                   />
+
+                    <input
+                    type="text"
+                    value={product.tendered || ''} // Set a default empty string if product.tendered is undefined
+                    className="form-control"
+                    placeholder="Tendered"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        tendered: e.target.value,
+                      });
+                    }}
+                  />             
+
+                <hr />
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              {/* <button>Close</button> */}
+
+              <button onClick={() => handleClick(product)}>SAVE</button>
+            </Modal.Footer>
+          </Modal>
+
+
+          <Modal show={showIndvuna} onHide={handleCloseIndvuna}>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                {add ? "Add a product" : "ADD INDVUNA BALLOT COUNT"}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {" "}
+              <div className="register-form">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                ></div>
+
+                  
+
+                  <input
+                    type="text"
+                    value={product.valid || ''}
+                    className="form-control"
+                    placeholder="Valid"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        valid: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.invalid || ''}
+                    className="form-control"
+                    placeholder="Invalid"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        invalid: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.spoilt || ''}
+                    className="form-control"
+                    placeholder="Spoilt"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        spoilt: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.tendered || ''} // Set a default empty string if product.tendered is undefined
+                    className="form-control"
+                    placeholder="Tendered"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        tendered: e.target.value,
+                      });
+                    }}
+                  />
                                 
 
-                {/* <input
-                  type="text"
-                  value={product.total_registered}
-                  className="form-control"
-                  placeholder="category"
-                  // readOnly={true}
-                  style={{ display: "none" }}
-                /> */}
+               
+                <hr />
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              {/* <button>Close</button> */}
 
-                {/* <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Add Voter Turnout"
-                  onChange={(e) => {
-                    setProduct({
-                      ...product,
-                      voters_count: e.target.value,
-                    });
+              <button onClick={() => handleClick2(product)}>SAVE</button>
+            </Modal.Footer>
+          </Modal>
+
+          <Modal show={showBucopho} onHide={handleCloseBucopho}>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                {add ? "Add a product" : "ADD BUCOPHO BALLOT COUNT"}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {" "}
+              <div className="register-form">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
-                /> */}
+                ></div>
+
+                 
+
+                  <input
+                    type="text"
+                    value={product.valid || ''}
+                    className="form-control"
+                    placeholder="Valid"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        valid: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.invalid || ''}
+                    className="form-control"
+                    placeholder="Invalid"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        invalid: e.target.value,
+                      });
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={product.spoilt || ''}
+                    className="form-control"
+                    placeholder="Spoilt"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        spoilt: e.target.value,
+                      });
+                    }}
+                  />
+
+                   <input
+                    type="text"
+                    value={product.tendered || ''} // Set a default empty string if product.tendered is undefined
+                    className="form-control"
+                    placeholder="Tendered"
+                    onChange={(e) => {
+                      setProduct({
+                        ...product,
+                        tendered: e.target.value,
+                      });
+                    }}
+                  />
+                
                 <hr />
               </div>
             </Modal.Body>
@@ -1350,12 +1276,12 @@ function AdminPage() {
 
           <div style={{ marginTop: '5%' }}></div>
 
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', overflowX: 'auto' }}>
       <div style={{ flex: 2, marginRight: '10px' }}>
       <table className="table table-bordered">
                 <thead>
                 <tr>
-                  <th>MEMBERS OF PARLIAMENT</th>
+                  <th>MP</th>
                   <th>VOTES</th>
                 </tr>
                 </thead>
@@ -1386,7 +1312,7 @@ function AdminPage() {
               <button
                 onClick={editHandlerMP}
                 size={30}
-              >MP Turnout
+              >MP BALLOT COUNT
               </button>
             </div>
 
@@ -1396,11 +1322,11 @@ function AdminPage() {
               <table className="table table-bordered bg-info">
                 <thead>
                   <tr>
-                    <th>INDVUNA YENKHUNDLA</th>
+                    <th>INDVUNA </th>
                     <th>VOTES</th>
                   </tr>
                 </thead>
-              
+
                 <tbody className="table table-bordered">
                   <tr >
                     <td>VALID</td>
@@ -1427,8 +1353,8 @@ function AdminPage() {
                 onClick={editHandlerIndvuna}
                 // color={editedRecord === item ? "gray" : "blue"}
                 size={30}
-                // disabled={editedRecord === item}
-                >INDVUNA Turnout</button>
+              // disabled={editedRecord === item}
+              >INDVUNA BALLOT COUNT</button>
 
             </div>
 
@@ -1437,13 +1363,13 @@ function AdminPage() {
             <div style={{ flex: 2, marginRight: '10px' }}>
               {/* <h5>BUCOPHO Turnout</h5> */}
               <table className="table table-bordered">
-              <thead>
-                <tr>
-                  <th>BUCOPHO</th>
-                  <th>VOTES</th>
-                </tr>
+                <thead>
+                  <tr>
+                    <th>BUCOPHO</th>
+                    <th>VOTES</th>
+                  </tr>
                 </thead>
-                
+
                 <tbody className="table table-bordered">
                   <tr >
                     <td>VALID</td>
@@ -1462,25 +1388,28 @@ function AdminPage() {
                     <td>{turnoutBucopho.tendered}</td>
                   </tr>
                 </tbody>
-               
+
               </table>
 
               <button
                 onClick={editHandlerBucopho}
                 size={30}
-              >BUCOPHO Turnout
+              >BUCOPHO BALLOT COUNT
               </button>
 
             </div>
           </div>
 
-          
+
 
         </Tab>
         
         <Tab eventKey="products" title="MEMBERS OF PARLIAMENTS">
         <DownloadButton />
-          <div className="d-flex justify-content-between"></div>
+          <div
+            className="d-flex justify-content-between"
+            style={{ overflowX: "auto" }}
+          >
           <table className="table mt-3">
             <thead>
               <tr>
@@ -1583,6 +1512,8 @@ function AdminPage() {
               })}
             </tbody>
           </table>
+
+          </div>
 
           <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -1693,7 +1624,10 @@ function AdminPage() {
 
         <Tab eventKey="orders" title="INDVUNA YENKHUNDLA">
         <DownloadButton />
-          <div className="d-flex justify-content-between"></div>
+         <div
+            className="d-flex justify-content-between"
+            style={{ overflowX: "auto" }}
+          >
           <table className="table mt-3">
             <thead>
               <tr>
@@ -1798,6 +1732,8 @@ function AdminPage() {
             </tbody>
           </table>
 
+          </div>
+
           <Modal show={show2} onHide={handleClose2}>
             <Modal.Header closeButton>
               <Modal.Title>
@@ -1884,7 +1820,7 @@ function AdminPage() {
 
         <Tab eventKey="bucopho" title="BUCOPHO">
         <DownloadButton />
-          <div className="d-flex justify-content-between"></div>
+          <div className="d-flex justify-content-between" style={{overflowX: 'auto' }}>
           <table className="table mt-3">
             <thead>
               <tr>
@@ -1986,7 +1922,7 @@ function AdminPage() {
               })}
             </tbody>
           </table>
-
+          </div>
           <Modal show={show4} onHide={handleClose4}>
             <Modal.Header closeButton>
               <Modal.Title>
