@@ -688,40 +688,9 @@ function AdminPage() {
   };
 
   const handleButtonClick = () => {
-<<<<<<< Updated upstream
-    // Navigate to the /test route
-    navigate("/REPORT");
-  };
-=======
-    // Create a new window to display the PDF
-    const newWindow = window.open();
-    if (newWindow) {
-      // Render the PDF in the new window
-      newWindow.document.body.innerHTML = `
-        <html>
-          <head>
-            <title>Report</title>
-          </head>
-          <body>
-            <iframe src="/REPORT.pdf" width="100%" height="100%"></iframe>
-          </body>
-        </html>
-      `;
-
-      // Generate the PDF file
-      const pdfContent = (
-        <MyPDF data={data} titles={titles} />
-      );
-
-      // Convert the PDF content to a data URL
-      const pdfDataUrl = `data:application/pdf;base64,${btoa(
-        pdfContent.props.children
-      )}`;
-
-      // Open the PDF in a new tab
-      newWindow.location.href = pdfDataUrl;
-    }}
->>>>>>> Stashed changes
+       // Navigate to the /test route
+       navigate("/REPORT");
+      }
 
   function DownloadButton() {
     const buttonStyles = {
