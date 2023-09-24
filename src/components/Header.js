@@ -16,6 +16,8 @@ function Header() {
     localStorage.removeItem("phone");
     localStorage.removeItem("pollstation");
     localStorage.removeItem("poll");
+    localStorage.removeItem("TAB");
+
     window.location.reload();
   };
 

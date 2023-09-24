@@ -215,6 +215,42 @@ function Reports() {
     // fetchNomineeData();
   }, []);
 
+
+  const data1 = []; // Your data array
+  const titles = ['MP', 'INDVUNA', 'BUCOPHO']; // Your titles array
+
+  const handleButtonClick = () => {
+    // Create a new window to display the PDF
+    const newWindow = window.open();
+    if (newWindow) {
+      // Render the PDF in the new window
+      newWindow.document.body.innerHTML = `
+        <html>
+          <head>
+            <title>Report</title>
+          </head>
+          <body>
+            <iframe src="/REPORT.pdf" width="100%" height="100%"></iframe>
+          </body>
+        </html>
+      `;
+
+      // Generate the PDF file
+      const pdfContent = (
+        <MyPDF data={data} titles={titles} />
+      );
+
+      // Convert the PDF content to a data URL
+      const pdfDataUrl = `data:application/pdf;base64,${btoa(
+        pdfContent.props.children
+      )}`;
+
+      // Open the PDF in a new tab
+      newWindow.location.href = pdfDataUrl;
+    }
+  };
+
+
   return (
     <div className="App">
       <ErrorBoundary>
@@ -222,19 +258,12 @@ function Reports() {
           // Show loading indicator or message
           Loader()
         ) : (
+          <div className="App">
+          <button onClick={handleButtonClick}>Open PDF</button>
           <PDFViewer width="100%" height="700px">
-            <Document>
-              <MyPDF
-                data={data}
-                titles={[
-                  //MP Gege
-                  "MP",
-                  "INDVUNA",
-                  "BUCOPHO",
-                ]}
-              />
-            </Document>
+            <MyPDF data={data1} titles={titles} />
           </PDFViewer>
+        </div>
         )}
       </ErrorBoundary>
     </div>

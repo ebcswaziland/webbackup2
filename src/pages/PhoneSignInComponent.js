@@ -68,6 +68,7 @@ function PhoneSignInComponent({ setShowPhoneSignIn }) {
         localStorage.setItem("poll", mpData.pollURL);
         localStorage.setItem("primary_poll", mpData.primaryPollUrl);
         localStorage.setItem("pollstation", mpData.pollingStation);
+        localStorage.setItem("TAB", "v_turnout");
 
         console.log(mp.pollURL);
         console.log(mp.pollingStation);

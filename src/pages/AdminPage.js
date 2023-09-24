@@ -11,6 +11,7 @@ import {
   runTransaction,
   updateDoc,
 } from "firebase/firestore";
+import { Document, Page, Text, View, PDFDownloadLink } from '@react-pdf/renderer';
 import React, { useEffect, useState } from "react";
 import { Modal, Tab, Tabs } from "react-bootstrap";
 import { FaBan, FaEdit } from "react-icons/fa";
@@ -440,6 +441,7 @@ function AdminPage() {
   };
 
   const updateMP = async (product, pollstation) => {
+    localStorage.setItem("TAB", "products");
     const mpDocRef = doc(fireDB, `${poll}/MP/nominees`, product.id);
     try {
       await runTransaction(fireDB, async (transaction) => {
@@ -468,6 +470,7 @@ function AdminPage() {
   };
 
   const updatetindvuna = async (product, pollstation) => {
+    localStorage.setItem("TAB", "orders");
     const indvunaDocRef = doc(fireDB, `${poll}/Indvuna/nominees`, product.id);
     try {
       await runTransaction(fireDB, async (transaction) => {
@@ -496,6 +499,7 @@ function AdminPage() {
   };
 
   const updateBucopho = async (product, pollstation) => {
+    localStorage.setItem("TAB", "v_turnout");
     const mpDocRef = doc(
       fireDB,
       `${primary_poll}/Bucopho/nominees`,
@@ -527,6 +531,7 @@ function AdminPage() {
     }
   };
   const updateturnout = async () => {
+    localStorage.setItem("TAB", "v_turnout");
     try {
       setLoading(true);
   
@@ -596,6 +601,7 @@ function AdminPage() {
       );
   
       toast.success("MP Results captured successfully");
+      localStorage.setItem("TAB", "v_turnout");
       window.location.reload();
     } catch (error) {
       console.error('Error updating document:', error);
@@ -624,7 +630,8 @@ function AdminPage() {
         }
       );
   
-      toast.success("MP Results captured successfully");
+      toast.success("Indvuna Results captured successfully");
+      localStorage.setItem("TAB", "v_turnout");
       window.location.reload();
     } catch (error) {
       console.error('Error updating document:', error);
@@ -653,7 +660,8 @@ function AdminPage() {
         }
       );
   
-      toast.success("MP Results captured successfully");
+      toast.success("Bucopho Results captured successfully");
+      localStorage.setItem("TAB", "v_turnout");
       window.location.reload();
     } catch (error) {
       console.error('Error updating document:', error);
@@ -680,9 +688,40 @@ function AdminPage() {
   };
 
   const handleButtonClick = () => {
+<<<<<<< Updated upstream
     // Navigate to the /test route
     navigate("/REPORT");
   };
+=======
+    // Create a new window to display the PDF
+    const newWindow = window.open();
+    if (newWindow) {
+      // Render the PDF in the new window
+      newWindow.document.body.innerHTML = `
+        <html>
+          <head>
+            <title>Report</title>
+          </head>
+          <body>
+            <iframe src="/REPORT.pdf" width="100%" height="100%"></iframe>
+          </body>
+        </html>
+      `;
+
+      // Generate the PDF file
+      const pdfContent = (
+        <MyPDF data={data} titles={titles} />
+      );
+
+      // Convert the PDF content to a data URL
+      const pdfDataUrl = `data:application/pdf;base64,${btoa(
+        pdfContent.props.children
+      )}`;
+
+      // Open the PDF in a new tab
+      newWindow.location.href = pdfDataUrl;
+    }}
+>>>>>>> Stashed changes
 
   function DownloadButton() {
     const buttonStyles = {
@@ -704,7 +743,7 @@ function AdminPage() {
   return (
     <Layout loading={loading}>
       <Tabs
-        defaultActiveKey="v_turnout"
+        defaultActiveKey={localStorage.getItem('TAB')} 
         id="uncontrolled-tab-example"
         className="mb-3"
         style={{ marginTop: '20px' }}
